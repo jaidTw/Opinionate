@@ -18,7 +18,11 @@ class TopicController extends Controller
      */
     public function index()
     {
-        return view('browseTopic');
+        $topics = DB::select(
+            'SELECT id, user_id, name, username, is_unlisted
+                FROM topics NATURAL JOIN
+                (SELECT id AS user_id, name AS username FROM users) AS users_inf');
+        return view('browseTopic', ['topics' => $topics]);
     }
 
     /**
@@ -28,9 +32,7 @@ class TopicController extends Controller
      */
     public function create(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required'
-        ]);
+        $this->validate($request, ['name' => 'required']);
         return view('createTopic', $request->all());
     }
 
@@ -56,14 +58,13 @@ class TopicController extends Controller
             // Insert topic
             DB::insert('INSERT INTO topics(user_id, name, description, is_unlisted, is_same_attr, created_at, updated_at)
                         VALUES(?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)',
-                [
-                    Auth::user()->id, 
-                    $request['name'], 
-                    $request['description'], 
-                    $request['is_unlisted'],
-                    $request['is_same_attr']
-                ]
-            );
+            [
+                Auth::user()->id, 
+                $request['name'], 
+                $request['description'], 
+                $request['is_unlisted'],
+                $request['is_same_attr']
+            ]);
 
             $topic_id = DB::getPdo()->lastInsertId();
 
@@ -73,19 +74,18 @@ class TopicController extends Controller
 
                 DB::insert('INSERT INTO question_sets(id, topic_id, name, type, is_multiple_choice, is_synced, is_anonymous, result_visibility, close_at, visualization)
                             VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                    [
-                        $qs_id,
-                        $topic_id,
-                        $data['name'],
-                        strtoupper($data['type']),
-                        $data['is_multiple_choice'],
-                        $data['is_synced'],
-                        $data['is_anonymous'],
-                        $data['result_visibility'],
-                        $data['close_at'],
-                        $data['visualization']
-                    ]
-                );
+                [
+                    $qs_id,
+                    $topic_id,
+                    $data['name'],
+                    strtoupper($data['type']),
+                    $data['is_multiple_choice'],
+                    $data['is_synced'],
+                    $data['is_anonymous'],
+                    $data['result_visibility'],
+                    $data['close_at'],
+                    $data['visualization']
+                ]);
 
                 for($opt_id = 1; $opt_id <= count($data['opts']); ++$opt_id) {
                     DB::insert('INSERT INTO options(id, question_set_id, topic_id, content) VALUES(?, ?, ?, ?)',
@@ -94,8 +94,6 @@ class TopicController extends Controller
                 }
             }
         });
-
-        return 0;
     }
 
     /**
@@ -106,7 +104,27 @@ class TopicController extends Controller
      */
     public function show($id)
     {
-        //
+        $topic = DB::select('SELECT * FROM topics WHERE id = :id', ['id' => $id]);
+        $proposer = DB::select('SELECT name FROM users WHERE id = :id', ['id' => $topic[0]->user_id]);
+        $question_sets = DB::select('SELECT id, name, type, is_multiple_choice, is_synced, is_anonymous, result_visibility, close_at, visualization
+            FROM question_sets WHERE topic_id = :id', ['id' => $id]);
+        $options = Array();
+
+        foreach($question_sets as $qs) {
+            $options[] = DB::select('SELECT id, content FROM options WHERE topic_id = :tid AND question_set_id = :qsid', [
+                'tid' => $id,
+                'qsid' => $qs->id
+            ]);
+        }
+            
+
+        return view('showTopic',
+        [
+            'topic' => $topic[0],
+            'proposer' => $proposer[0],
+            'question_sets' => $question_sets,
+            'options' => $options,
+        ]);
     }
 
     /**

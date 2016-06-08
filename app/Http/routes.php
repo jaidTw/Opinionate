@@ -20,6 +20,8 @@ Route::auth();
 Route::any('/home', 'HomeController@index');
 Route::get('/topics', 'TopicController@index');
 
+Route::get('/topics/{id}', 'TopicController@show');
+
 // Use auth middleware to make sure user is logged in before any post
 Route::post('/topics/create', 'TopicController@create')->middleware('auth');
 Route::post('/topics/store', 'TopicController@store')->middleware('auth');

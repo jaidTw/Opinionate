@@ -197,7 +197,7 @@ $(function()
                 'is_unlisted' : 0,
                 'is_same_attr' : 0
             }, function(data) {
-            alert('POST Success');
+            window.location = '{{ url('topics') }}'
         });
 
         // Has to replaced with a more friendly and integrated error message.

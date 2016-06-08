@@ -15,9 +15,28 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Topics</div>
 
-                <div class="panel-body">
-                    Topics list.
-                </div>
+                <table class="table table-hover">
+                <tr>
+                    <th> id </th>
+                    <th> Topic name </th>
+                    <th> Proposer </th>
+                </tr>
+                @foreach($topics as $topic)
+                    <tr>
+                        <td> {{ $topic->id }} </td>
+                        <td>
+                            <a href=' {{ url('topics/' . $topic->id) }}'>
+                                {{ $topic->name }}
+                            </a>
+                        </td>
+                        <td>
+                            <!--<a href=' {{ url('users/' . $topic->user_id) }}'>-->
+                                {{ $topic->username }}
+                            <!--</a>-->
+                        </td>
+                    </tr>
+                @endforeach
+                </table>
             </div>
         </div>
     </div>
