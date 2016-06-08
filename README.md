@@ -25,5 +25,11 @@ php artisan migrate
 ```
 
 # Todo
+* `browseTopic` add `description`, `is_unlisted`, `is_same_attr` field.
+* `createTopic` add `is_multiple_choice`, `is_synced`, `is_anonymous`, `result_visibility`, `close_at`, `visualization` fiedl.
+* `createTopic` add `is_same_attr` handling.
+* Browse Topic Page
+* Show Topic Page
 * Topic Edit Page
-* Validation error message
+* Destroy feature
+* Validation error message hadling.
