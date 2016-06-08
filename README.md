@@ -29,10 +29,13 @@ php artisan migrate
     * use laravel paginator
     * `createModal` add `description`, `is_unlisted`, `is_same_attr` field.
 * `createTopic`
-    * add `is_multiple_choice`, `is_synced`, `is_anonymous`, `result_visibility`, `close_at`, `visualization` field.
+    * qs and options number constraint.
+        - Use CSS selector to count the number of DOM elements and trigger error.
+    * add `description`, `is_unlisted`, `close_at`, `is_same_attr` field.
     * add `is_same_attr` handling.
 * Show Topic Page
 * Edit Topic Page
 * Destroy feature
 * Validation error message hadling.
 * Replace pure sql statements with Eloquent ORM after demo
+* I18N + Chinese L10N
