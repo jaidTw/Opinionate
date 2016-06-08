@@ -176,9 +176,27 @@ $(function()
                 opts.push($('.qs-entry:nth-child(' + String(i) + ') .opt-entry:nth-child(' + String(j) + ') .qs-opt').val());
             }
 
-            data.push({'name' : name, 'type' : type, 'opts' : opts});
+            data.push({
+                'name' : name,
+                'type' : type,
+                'is_multiple_choice' : false,
+                'is_synced' : false,
+                'is_anonymous' : false,
+                'result_visibility' : false,
+                'close_at' : 0,
+                'visualization' : 0,
+                'opts' : opts
+            });
         }
-        var jqxhr = $.post('/topics/store', {'_token' : '{{ csrf_token() }}', 'data' : data}, function(data) {
+        var jqxhr = $.post('/topics/store',
+            {
+                '_token' : '{{ csrf_token() }}',
+                'data' : data,
+                'name' : '{{ $name }}',
+                'description' : 'D',
+                'is_unlisted' : 0,
+                'is_same_attr' : 0
+            }, function(data) {
             alert('POST Success');
         });
 

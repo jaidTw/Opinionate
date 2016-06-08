@@ -21,8 +21,8 @@ class CreateQuestionSetsTable extends Migration
             $table->boolean('is_synced');
             $table->boolean('is_anonymous');
             $table->enum('result_visibility', ['VISIBLE', 'VISIBLE_AFTER', 'INVISIBLE']);
-            $table->timestamps('close_at');
-            $table->tinyInteger('visulization');
+            $table->timestamp('close_at');
+            $table->tinyInteger('visualization');
             $table->primary(['id', 'topic_id']);
             $table->foreign('topic_id')->references('id')->on('topics');
         });

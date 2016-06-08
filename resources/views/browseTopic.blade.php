@@ -63,3 +63,14 @@
         </div>
     </div>
 </div>
+
+@section('scripts')
+@if ($errors->has('name'))
+<script>
+$(function()
+{
+    $('#CreateModal').modal('show');
+});
+</script>
+@endif
+@endsection
