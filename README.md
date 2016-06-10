@@ -41,3 +41,4 @@ php artisan migrate
 * Validation error message hadling.
 * Replace pure sql statements with Eloquent ORM after demo
 * I18N + Chinese L10N
+* Add discuss support

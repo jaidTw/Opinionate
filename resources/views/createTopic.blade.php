@@ -28,6 +28,48 @@
                         </div>
                     </div>
 
+                    <div class="qs-attrs hidden">
+                        <div class="row form-group">
+                            <div class="col-md-1">
+                                <label class="control-label">Attributes</label>
+                            </div>
+                            <div class="col-md-11">
+                                <div class="checkbox col-md-12">
+                                    <label>
+                                        <input class="qs-mult" type="checkbox" value=""/>
+                                        Multiple Choice
+                                    </label>
+                                </div>
+                                <div class="checkbox col-md-12">
+                                    <label>
+                                        <input class="qs-sync" type="checkbox" value=""/>
+                                        Synchronized
+                                    </label>
+                                </div>
+                                <div class="checkbox col-md-12">
+                                    <label>
+                                        <input class="qs-anonymous" type="checkbox" value=""/>
+                                        Anonymous
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-group">
+                            <div class="col-md-1">
+                                <label class="control-label">Result Visbility</label>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="qs-vis form-control">
+                                    <option>Visible</option>
+                                    <option>Invisible</option>
+                                    <option>Visible after ended</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+
                     <div class="row form-group">
                         <div class="checkbox col-md-12">
                             <label>
@@ -162,8 +204,7 @@
 $(function()
 {
     // Register handlers
-    $(document).on('click', '.btn-qs-add', function(e)
-    {
+    $(document).on('click', '.btn-qs-add', function(e) {
         e.preventDefault();
 
         var controlForm = $('.qs-controls:first')
@@ -173,18 +214,17 @@ $(function()
                 .removeClass('qs-entry-template')
                 .addClass('qs-entry')
 
-        if($('#same-attr')[0].checked){
-            newEntry.find('.qs-attrs').remove()
+        // If same-attr is checked , don't show qs-attrs
+        if($('#same-attr')[0].checked) {
+            newEntry.find('.qs-attrs').addClass('hidden')
         }
-    }).on('click', '.btn-qs-remove', function(e)
-    {
+    }).on('click', '.btn-qs-remove', function(e) {
         $(this).parents('.qs-entry:first').remove();
         e.preventDefault();
         return false;
     });
 
-    $(document).on('click', '.btn-opt-add', function(e)
-    {
+    $(document).on('click', '.btn-opt-add', function(e) {
         e.preventDefault();
 
         var controlForm = $(this).parents('.opt-controls:first');
@@ -198,24 +238,22 @@ $(function()
             .removeClass('btn-success').addClass('btn-danger')
             .html('<span class="glyphicon glyphicon-minus"></span>');
 
-    }).on('click', '.btn-opt-remove', function(e)
-    {
+    }).on('click', '.btn-opt-remove', function(e) {
         $(this).parents('.opt-entry:first').remove();
         e.preventDefault();
         return false;
     });
 
-    $(document).on('change', '#same-attr', function(e)
-    {
+    $(document).on('change', '#same-attr', function(e) {
+        e.preventDefault();
+
         if($(this)[0].checked) {
-            var insertPos = $('#end-time').parents('.form-group')
-            $('.qs-attrs:first').clone().insertAfter(insertPos);
-            $('.qs-entry .qs-attrs').remove();
+            $('.qs-attrs:first').removeClass('hidden');
+            $('.qs-entry .qs-attrs').addClass('hidden');
         }
         else {
-            var insertPos = $('.qs-type').parents('.form-group')
-            $('.qs-attrs:first').insertAfter(insertPos);
-            $('.qs-attrs:first').remove();
+            $('.qs-attrs:first').addClass('hidden');
+            $('.qs-entry .qs-attrs').removeClass('hidden');
         }
     });
 
@@ -223,10 +261,9 @@ $(function()
     $('.btn-qs-add').trigger('click');
     $('.btn-qs-remove:last').remove();
 
-    // If same-attr is checked by autocomplete
-    if($('#same-attr')[0].checked){
-        var insertPos = $('#end-time').parents('.form-group')
-        $('.qs-attrs:first').clone().insertAfter(insertPos);
+    // If same-attr is checked by autocomplete, show the general qs-attrs
+    if($('#same-attr')[0].checked) {
+        $('.qs-attrs:first').removeClass('hidden');
     }
 
     $(document).on('click', '.btn-submit', function(e) {
@@ -238,7 +275,6 @@ $(function()
             var type = $('.qs-entry:nth-child(' + String(i) + ') .qs-type').val();
 
             var is_multiple_choice, is_synced, is_anonymous, result_visibility;
-
             if($('#same-attr')[0].checked) {
                 is_multiple_choice = $('.qs-attrs:first .qs-mult').is(':checked') ? 1 : 0;
                 is_synced = $('.qs-attrs:first .qs-sync').is(':checked') ? 1 : 0;
@@ -258,7 +294,8 @@ $(function()
                 opts.push($('.qs-entry:nth-child(' + String(i) + ') .opt-entry:nth-child(' + String(j) + ') .qs-opt').val());
             }
 
-            data.push({
+            data.push(
+            {
                 'name' : name,
                 'type' : type,
                 'is_multiple_choice' : is_multiple_choice,

@@ -6,19 +6,19 @@
             </h3>
 
             <h4>
-                @if($question_sets[$qs_idx]->is_multiple_choice)
-                    <span class="label label-primary">Multiple choice</span>
-                @else
-                    <span class="label label-primary">Single choice</span>
-                @endif
-                @if($question_sets[$qs_idx]->is_synced)
-                    <span class="label label-success">Synchronous</span>
-                @else
-                    <span class="label label-success">Asynchronous</span>
-                @endif
-                @if($question_sets[$qs_idx]->is_anonymous)
-                    <span class="label label-warning">Anonymous</span>
-                @endif
+            @if($question_sets[$qs_idx]->is_multiple_choice)
+                <span class="label label-primary">Multiple choice</span>
+            @else
+                <span class="label label-primary">Single choice</span>
+            @endif
+            @if($question_sets[$qs_idx]->is_synced)
+                <span class="label label-success">Synchronous</span>
+            @else
+                <span class="label label-success">Asynchronous</span>
+            @endif
+            @if($question_sets[$qs_idx]->is_anonymous)
+                <span class="label label-warning">Anonymous</span>
+            @endif
             </h4>
         </div>
         <ul class="list-group">
