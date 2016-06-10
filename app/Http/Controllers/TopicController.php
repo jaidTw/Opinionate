@@ -47,7 +47,6 @@ class TopicController extends Controller
             'name' => 'required',
             'description' => 'required',
             'is_unlisted' => 'boolean|required',
-            'is_same_attr' => 'boolean|required',
             'close_at' => 'required',
             'data.*.name' => 'required',
             'data.*.opts.*' => 'required',
@@ -63,14 +62,13 @@ class TopicController extends Controller
         DB::transaction(function() use (&$request, &$topic_id) {
 
             // Insert topic
-            DB::insert('INSERT INTO topics(user_id, name, description, is_unlisted, is_same_attr, close_at, created_at, updated_at)
-                        VALUES(?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)',
+            DB::insert('INSERT INTO topics(user_id, name, description, is_unlisted, close_at, created_at, updated_at)
+                        VALUES(?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)',
             [
                 Auth::user()->id, 
                 $request['name'], 
                 $request['description'], 
                 $request['is_unlisted'],
-                $request['is_same_attr'],
                 $request['close_at']
             ]);
 
@@ -90,7 +88,7 @@ class TopicController extends Controller
                     $data['is_multiple_choice'],
                     $data['is_synced'],
                     $data['is_anonymous'],
-                    $data['result_visibility'],
+                    strtoupper($data['result_visibility']),
                 ]);
 
                 // Insert options
@@ -124,7 +122,6 @@ class TopicController extends Controller
                 'qsid' => $qs->id
             ]);
         }
-            
 
         return view('showTopic',
         [

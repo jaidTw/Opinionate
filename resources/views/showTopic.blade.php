@@ -60,11 +60,11 @@
                     {{ $proposer->name }}
                     <h3> Unlisted </h3>
                     {{ $topic->is_unlisted ? 'Yes' : 'No' }}
-                    <h3> Close At </h3>
+                    <h3> End Time </h3>
                     {{ $topic->close_at }}
-                    <h3> Created Time</h3>
+                    <h3> Created Time </h3>
                     {{ $topic->created_at }}
-                    <h3> Last Edit Time</h3>
+                    <h3> Last Edit Time </h3>
                     {{ $topic->updated_at }}
                 </div>
             </div>

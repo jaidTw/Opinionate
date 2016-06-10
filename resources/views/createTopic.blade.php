@@ -10,6 +10,38 @@
                     Question Sets
                 </div>
                 <div class="panel-body">
+                    <div class="row form-group">
+                        <div class="col-md-1">
+                            <label class="control-label">Description</label>
+                        </div>
+                        <div class="col-md-8">
+                            <textarea id="description" class="form-control" style="resize:none"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-md-1">
+                            <label class="control-label">End Time</label>
+                        </div>
+                        <div class="col-md-3">
+                            <input id="end-time" class="form-control" type="text"/>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="checkbox col-md-12">
+                            <label>
+                                <input id="unlisted" type="checkbox" value=""/>
+                                Unlisted
+                            </label>
+                        </div>
+                        <div class="checkbox col-md-12">
+                            <label>
+                                <input id="same-attr" type="checkbox" value=""/>
+                                Use same attribute for all question Sets.
+                            </label>
+                        </div>
+                    </div>
 
                     <div class="qs-entry-template panel panel-default" hidden>
                         <div class="panel-heading"> 
@@ -20,7 +52,6 @@
                                 <div class="col-md-1 col-md-offset-7">
                                     <button type="button" class="close btn-qs-remove">
                                         <span aria-hidden="true">&times;</span>
-                                        <span class="sr-only">Close</span>
                                     </button>
                                 </div>
                             </div>
@@ -42,42 +73,44 @@
                                 </div>
                             </div>
 
-                            <div class="row form-group">
-                                <div class="col-md-1">
-                                    <label class="control-label">Attributes</label>
+                            <div class="qs-attrs">
+                                <div class="row form-group">
+                                    <div class="col-md-1">
+                                        <label class="control-label">Attributes</label>
+                                    </div>
+                                    <div class="col-md-11">
+                                        <div class="checkbox col-md-12">
+                                            <label>
+                                                <input class="qs-mult" type="checkbox" value=""/>
+                                                Multiple Choice
+                                            </label>
+                                        </div>
+                                        <div class="checkbox col-md-12">
+                                            <label>
+                                                <input class="qs-sync" type="checkbox" value=""/>
+                                                Synchronized
+                                            </label>
+                                        </div>
+                                        <div class="checkbox col-md-12">
+                                            <label>
+                                                <input class="qs-anonymous" type="checkbox" value=""/>
+                                                Anonymous
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-11">
-                                    <div class="checkbox col-md-12">
-                                        <label>
-                                            <input class="qs-mult" type="checkbox" value=""/>
-                                            Multiple Choice
-                                        </label>
-                                    </div>
-                                    <div class="checkbox col-md-12">
-                                        <label>
-                                            <input class="qs-sync" type="checkbox" value=""/>
-                                            Synchronized
-                                        </label>
-                                    </div>
-                                    <div class="checkbox col-md-12">
-                                        <label>
-                                            <input class="qs-anonymous" type="checkbox" value=""/>
-                                            Anonymous
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <div class="row form-group">
-                                <div class="col-md-1">
-                                    <label class="control-label">Result Visbility</label>
-                                </div>
-                                <div class="col-md-3">
-                                    <select class="qs-vis form-control">
-                                        <option>Visible</option>
-                                        <option>Invisible</option>
-                                        <option>Visible after ended</option>
-                                    </select>
+                                <div class="row form-group">
+                                    <div class="col-md-1">
+                                        <label class="control-label">Result Visbility</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="qs-vis form-control">
+                                            <option>Visible</option>
+                                            <option>Invisible</option>
+                                            <option>Visible after ended</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
 
@@ -128,6 +161,7 @@
 <script>
 $(function()
 {
+    // Register handlers
     $(document).on('click', '.btn-qs-add', function(e)
     {
         e.preventDefault();
@@ -138,6 +172,10 @@ $(function()
         newEntry.removeAttr('hidden')
                 .removeClass('qs-entry-template')
                 .addClass('qs-entry')
+
+        if($('#same-attr')[0].checked){
+            newEntry.find('.qs-attrs').remove()
+        }
     }).on('click', '.btn-qs-remove', function(e)
     {
         $(this).parents('.qs-entry:first').remove();
@@ -167,19 +205,52 @@ $(function()
         return false;
     });
 
+    $(document).on('change', '#same-attr', function(e)
+    {
+        if($(this)[0].checked) {
+            var insertPos = $('#end-time').parents('.form-group')
+            $('.qs-attrs:first').clone().insertAfter(insertPos);
+            $('.qs-entry .qs-attrs').remove();
+        }
+        else {
+            var insertPos = $('.qs-type').parents('.form-group')
+            $('.qs-attrs:first').insertAfter(insertPos);
+            $('.qs-attrs:first').remove();
+        }
+    });
+
+    // Add the first quesetion set and remove the remove button
     $('.btn-qs-add').trigger('click');
     $('.btn-qs-remove:last').remove();
+
+    // If same-attr is checked by autocomplete
+    if($('#same-attr')[0].checked){
+        var insertPos = $('#end-time').parents('.form-group')
+        $('.qs-attrs:first').clone().insertAfter(insertPos);
+    }
 
     $(document).on('click', '.btn-submit', function(e) {
         var data = [];
         var qs_cnt = $('.qs-entry').length;
+
         for(var i = 1; i <= qs_cnt; ++i) {
             var name = $('.qs-entry:nth-child(' + String(i) + ') .qs-name').val();
             var type = $('.qs-entry:nth-child(' + String(i) + ') .qs-type').val();
-            var is_multiple_choice = $('.qs-entry:nth-child(' + String(i) + ') .qs-mult').is(':checked') ? 1 : 0;
-            var is_synced = $('.qs-entry:nth-child(' + String(i) + ') .qs-sync').is(':checked') ? 1 : 0;
-            var is_anonymous = $('.qs-entry:nth-child(' + String(i) + ') .qs-anonymous').is(':checked') ? 1 : 0;
-            var result_visibility = $('.qs-entry:nth-child(' + String(i) + ') .qs-vis').val();
+
+            var is_multiple_choice, is_synced, is_anonymous, result_visibility;
+
+            if($('#same-attr')[0].checked) {
+                is_multiple_choice = $('.qs-attrs:first .qs-mult').is(':checked') ? 1 : 0;
+                is_synced = $('.qs-attrs:first .qs-sync').is(':checked') ? 1 : 0;
+                is_anonymous = $('.qs-attrs:first .qs-anonymous').is(':checked') ? 1 : 0;
+                result_visibility = $('.qs-attrs:first .qs-vis').val();
+            }
+            else {
+                is_multiple_choice = $('.qs-entry:nth-child(' + String(i) + ') .qs-mult').is(':checked') ? 1 : 0;
+                is_synced = $('.qs-entry:nth-child(' + String(i) + ') .qs-sync').is(':checked') ? 1 : 0;
+                is_anonymous = $('.qs-entry:nth-child(' + String(i) + ') .qs-anonymous').is(':checked') ? 1 : 0;
+                result_visibility = $('.qs-entry:nth-child(' + String(i) + ') .qs-vis').val();   
+            }
             var opts = [];
 
             var opt_cnt = $('.qs-entry:nth-child(' + String(i) + ') .opt-entry').length;
@@ -202,9 +273,8 @@ $(function()
                 '_token' : '{{ csrf_token() }}',
                 'data' : data,
                 'name' : '{{ $name }}',
-                'description' : 'D',
-                'is_unlisted' : 0,
-                'is_same_attr' : 0,
+                'description' : $('#description').val(),
+                'is_unlisted' : $('#unlisted').is(':checked') ? 1 : 0,
                 'close_at' : 0
             }, function(returned_id) {
             window.location = '{{ url('topics') }}/' + String(returned_id)
