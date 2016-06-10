@@ -49,7 +49,8 @@
                     @endcan
                     </h3>
                 </div>
-                <div class="panel-body">
+
+                <div id="qs-list" class="panel-body">
                     @include('showQuestionSet')
                 </div>
             </div>
@@ -89,16 +90,29 @@
                     <p> {{ $topic->created_at }} </p>
 
                     <h3> Last Edit Time </h3>
-                    <p> {{ $topic->updated_at }} </p>
+                    <p id="updated-at"> {{ $topic->updated_at }} </p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="popover">
-    Test
+@can('update-topic', $topic)
+<div id="error-modal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                <span aria-hidden="true">&times;</span>
+                <span class="sr-only">Close</span></button>
+            <h4 class="modal-title">Oops!</h4>
+        </div>
+        <div class="modal-body">
+            <p></p>
+        </div>
+    </div>
 </div>
+@endcan
 @endsection
 
 @section('scripts')
@@ -109,21 +123,76 @@ $(function()
     $(document).on('click', '.option', function(e) {
         e.preventDefault();
 
+        var qs_id = $(this).parents('.qs-entry').index() + 1;
+        var opt_id = $('.qs-entry:nth(' + String(qs_id - 1) + ') .option').index($(this)) + 1;
+        console.log([qs_id,opt_id]);
+
         if($(this).hasClass('multi')) {
             if($(this).hasClass('list-group-item-info')) {
-                $(this).removeClass('list-group-item-info');
+                //destroy
+                $.post('/topics/' + String({{$topic->id}}) + '/ballot/destroy',
+                {
+                    '_token' : '{{ csrf_token() }}',
+                    'qsid' : qs_id,
+                    'optid' : opt_id
+                }, function(data) {
+                    loadQuestionSet(qs_id - 1);
+                }).error(function(data) {
+                    loadQuestionSet(qs_id - 1);
+                    // May add more complicated error message here.
+                    $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
+                    $('#error-modal').modal('show');
+                });
             }
             else {
-                $(this).addClass('list-group-item-info');
+                //create
+                $.post('/topics/' + String({{$topic->id}}) + '/ballot/store',
+                {
+                    '_token' : '{{ csrf_token() }}',
+                    'qsid' : qs_id,
+                    'optid' : opt_id
+                }, function(data) {
+                    loadQuestionSet(qs_id - 1);
+                }).error(function(data) {
+                    loadQuestionSet(qs_id - 1);
+                    // May add more complicated error message here.
+                    $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
+                    $('#error-modal').modal('show');
+                });
             }
         }
         else {
             if($(this).hasClass('list-group-item-info')) {
-                $(this).removeClass('list-group-item-info');
+                //destroy
+                $.post('/topics/' + String({{$topic->id}}) + '/ballot/destroy',
+                {
+                    '_token' : '{{ csrf_token() }}',
+                    'qsid' : qs_id,
+                    'optid' : opt_id
+                }, function(data) {
+                    loadQuestionSet(qs_id - 1);
+                }).error(function(data) {
+                    loadQuestionSet(qs_id - 1);
+                    // May add more complicated error message here.
+                    $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
+                    $('#error-modal').modal('show');
+                });
             }
             else {
-                $(this).siblings('.option').removeClass('list-group-item-info');
-                $(this).addClass('list-group-item-info');
+                //update
+                $.post('/topics/' + String({{$topic->id}}) + '/ballot/update',
+                {
+                    '_token' : '{{ csrf_token() }}',
+                    'qsid' : qs_id,
+                    'optid' : opt_id
+                }, function(data) {
+                    loadQuestionSet(qs_id - 1);
+                }).error(function(data) {
+                    loadQuestionSet(qs_id - 1);
+                    // May add more complicated error message here.
+                    $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
+                    $('#error-modal').modal('show');
+                });
             }
         }
     });
@@ -150,10 +219,26 @@ $(function()
     });
 
     $(document).on('click', '#topic-name-update', function(e) {
-        $('#topic-name').parent().removeClass('hidden');
-        $('#topic-name-input').parent().addClass('hidden');
         $(this).attr('id', 'topic-name-edit');
-        //POST
+
+        $.post('/topics/' + String({{$topic->id}}) + '/update',
+        {
+            '_token' : '{{ csrf_token() }}',
+            'type' : 'name',
+            'data' : $('#topic-name-input').val(),
+        }, function(data) {
+            $('#topic-name').text($('#topic-name-input').val());
+            $('#topic-name').parent().removeClass('hidden');
+            $('#topic-name-input').parent().addClass('hidden');
+            $('#updated-at').html(data['updated_at']);
+        }).error(function(data) {
+            $('#topic-name').parent().removeClass('hidden');
+            $('#topic-name-input').parent().addClass('hidden');
+
+            // May add more complicated error message here.
+            $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
+            $('#error-modal').modal('show');
+        });
     });
 
     $(document).on('click', '#topic-des-edit', function(e) {
@@ -163,10 +248,26 @@ $(function()
     });
 
     $(document).on('click', '#topic-des-update', function(e) {
-        $('#topic-des-input').addClass('hidden');
-        $('#topic-des').removeClass('hidden');
         $(this).attr('id', 'topic-des-edit').blur();
-        //POST
+
+        $.post('/topics/' + String({{$topic->id}}) + '/update',
+        {
+            '_token' : '{{ csrf_token() }}',
+            'type' : 'des',
+            'data' : $('#topic-des-input').val(),
+        }, function(data) {
+            $('#topic-des').text($('#topic-des-input').val());
+            $('#topic-des-input').addClass('hidden');
+            $('#topic-des').removeClass('hidden');
+            $('#updated-at').html(data['updated_at']);
+        }).error(function(data) {
+            $('#topic-des-input').addClass('hidden');
+            $('#topic-des').removeClass('hidden');
+
+            // May add more complicated error message here.
+            $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
+            $('#error-modal').modal('show');
+        });
     });
 
     $(document).on('click', '#topic-attr-edit', function(e) {
@@ -181,11 +282,46 @@ $(function()
         $('.topic-attr').removeClass('hidden');
         $('#topic-unlist-input').addClass('hidden');
         $('#topic-end-time-input').addClass('hidden');
-        //POST
+
         $(this).attr('id', 'topic-attr-edit').blur();
     });
-
 @endcan
+    loadQuestionSets();
 });
+
+function loadQuestionSets() {
+    $.get('/topics/' + String({{$topic->id}}) + '/count', function(data) {
+        for(var idx = 0; idx < data['qs_count']; ++idx) {
+            loadQuestionSet(idx);
+        }
+    })
+}
+
+function loadQuestionSet(index) {
+    $.get('/topics/' + String({{$topic->id}}) + '/' + String(index + 1), function(data) {
+        var entry = $('.qs-entry:nth(' + String(index) + ')')
+        
+        if(data['question_set']['is_multiple_choice']){
+            entry.find('.option-template').addClass('multi');
+        }
+
+        entry.find('.option').remove();
+        for(var opt_idx = 0; opt_idx < data['options'].length; ++opt_idx) {
+            var newOption = entry.find('.option-template').clone();
+            var option = data['options'][opt_idx];
+
+            newOption.removeClass('hidden').removeClass('option-template').addClass('option');
+            newOption.children('label').html(option['content']);
+            newOption.appendTo(entry.find('ul'));
+        }
+    @if(Auth::check())
+        for(var ballot_idx = 0; ballot_idx < data['ballots'].length; ++ballot_idx){
+            entry.find('.option:nth(' + String(data['ballots'][ballot_idx]['option_id'] - 1) +')')
+                .addClass('list-group-item-info');
+        }
+    @endif
+    }).error(function(data) {
+    });
+}
 </script>
 @endsection

@@ -28,13 +28,11 @@ php artisan migrate
 * `browseTopic`
     * use laravel paginator
 * `createTopic`
-    * qs and options number constraint.
-        - Use CSS selector to count the number of DOM elements and trigger error.
-    * `close_at` timestamp validation.
-    * `result_visibility` validation.
-    * `type` validation.
-* Show Topic Page
-* Edit Topic Page
+    * question sets and options number constraint.
+        - trigger error by the number of DOM elements.
+    * `close_at` timestamp validation(by regex or something more complicated).
+    * rewrite post with jQuery `.index()`
+* Change edit button to save and cancel
 * Landing Page
 * User Dashboard
 * Destroy feature
@@ -42,3 +40,6 @@ php artisan migrate
 * Replace pure sql statements with Eloquent ORM after demo
 * I18N + Chinese L10N
 * Add discuss support
+
+# License
+The MIT License

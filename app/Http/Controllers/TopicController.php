@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Gate;
 
 use App\Http\Requests;
 
@@ -50,11 +52,11 @@ class TopicController extends Controller
             'close_at' => 'required',
             'data.*.name' => 'required',
             'data.*.opts.*' => 'required',
-            'data.*.type' => 'required',
+            'data.*.type' => Array('required', 'regex:/^General$|^Location$|^Time$|^Image$|^Audio$|^Video$/'),
             'data.*.is_multiple_choice' => 'boolean | required',
             'data.*.is_synced' => 'boolean | required',
             'data.*.is_anonymous' => 'boolean | required',
-            'data.*.result_visibility' => 'required',
+            'data.*.result_visibility' => Array('required', 'regex:/^Visible$|^Invisible$|^Visible after ended$/'),
         ]);
 
         $topic_id = 0;
@@ -110,17 +112,19 @@ class TopicController extends Controller
      */
     public function show($id)
     {
-        $topic = DB::select('SELECT * FROM topics WHERE id = :id', ['id' => $id]);
-        $proposer = DB::select('SELECT name FROM users WHERE id = :id', ['id' => $topic[0]->user_id]);
+        $topic = DB::select('SELECT * FROM topics WHERE id = ?', [$id]);
+        $proposer = DB::select('SELECT name FROM users WHERE id = ?', [$topic[0]->user_id]);
         $question_sets = DB::select('SELECT id, name, type, is_multiple_choice, is_synced, is_anonymous, result_visibility
-            FROM question_sets WHERE topic_id = :id', ['id' => $id]);
-        $options = Array();
+            FROM question_sets WHERE topic_id = ?', [$id]);
 
+        $options = Array();
+        $ballots = Array();
+        
+        // here could be optimize
         foreach($question_sets as $qs) {
-            $options[] = DB::select('SELECT id, content FROM options WHERE topic_id = :tid AND question_set_id = :qsid', [
-                'tid' => $id,
-                'qsid' => $qs->id
-            ]);
+            $options[] = DB::select('SELECT id, content FROM options WHERE topic_id = ? AND question_set_id = ?', [$id, $qs->id]);
+            $ballots[] = DB::select('SELECT question_set_id, option_id
+            FROM ballots WHERE topic_id = ? AND user_id = ?', [$id, Auth::user()->id]);
         }
 
         return view('showTopic',
@@ -129,20 +133,10 @@ class TopicController extends Controller
             'proposer' => $proposer[0],
             'question_sets' => $question_sets,
             'options' => $options,
+            'ballots' => $ballots
         ]);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
+    
     /**
      * Update the specified resource in storage.
      *
@@ -152,7 +146,26 @@ class TopicController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $topic = DB::select('SELECT * FROM topics WHERE id = ?', [$id]);
+
+        if(Gate::denies('update-topic', $topic[0])) {
+            return redirect('/topics');
+        }
+
+        $this->validate($request, [
+            'type' => Array('required', 'regex:/^name$|^des$|^attr$/'),
+        ]);
+        
+        if($request['type'] === 'name') {
+            DB::update('UPDATE topics SET name = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [$request['data'], $id]);
+        }
+        else if($request['type'] === 'des') {
+            DB::update('UPDATE topics SET description = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [$request['data'], $id]);
+        }
+
+        $time = DB::select('SELECT updated_at FROM topics WHERE id = ?', [$id])[0]->updated_at;
+
+        return response()->json(["updated_at" => $time]);
     }
 
     /**
@@ -163,6 +176,10 @@ class TopicController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $topic = DB::select('SELECT * FROM topics WHERE id = ?', [$id]);
+
+        if(Gate::denies('update-topic', $topic[0])) {
+            return redirect('/topics');
+        }
     }
 }

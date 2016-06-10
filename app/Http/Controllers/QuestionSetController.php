@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 use App\Http\Requests;
@@ -14,21 +16,13 @@ class QuestionSetController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        //
+        $result = DB::select('SELECT COUNT(id) AS qs_count
+            FROM question_sets WHERE topic_id = ?', [$id]
+        );
+        return response()->json($result[0]);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -49,19 +43,34 @@ class QuestionSetController extends Controller
     public function show($id, $qsid)
     {
         $question_sets = DB::select('SELECT id, name, type, is_multiple_choice, is_synced, is_anonymous, result_visibility
-            FROM question_sets WHERE topic_id = :id && id = :qsid', [
-            'id' => $id,
-            'qsid' => $qsid
-        ]);
-        $options = DB::select('SELECT id, content FROM options WHERE topic_id = :tid AND question_set_id = :qsid', [
-            'tid' => $id,
-            'qsid' => $qsid
-        ]);
+            FROM question_sets WHERE topic_id = ? && id = ?', [$id, $qsid]
+        );
 
-        return view('showQuestionSet', [
-            'question_sets' => $question_sets[0],
-            'options' => $options
-        ]);
+        $options = DB::select('SELECT id, content
+            FROM options WHERE topic_id = ? AND question_set_id = ?', [$id, $qsid]
+        );
+
+        if(Auth::check()) {
+            $ballots = DB::select('SELECT option_id
+                FROM ballots WHERE topic_id = ? AND question_set_id = ? AND user_id = ?',
+            [
+                $id,
+                $qsid,
+                Auth::user()->id
+            ]);
+
+            return response()->json([
+                'question_set' => $question_sets[0],
+                'options' => $options,
+                'ballots' => $ballots
+            ]);
+        }
+        else {
+            return response()->json([
+                'question_set' => $question_sets[0],
+                'options' => $options
+            ]);
+        }
     }
 
     /**

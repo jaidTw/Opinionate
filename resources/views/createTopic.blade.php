@@ -270,6 +270,7 @@ $(function()
         var data = [];
         var qs_cnt = $('.qs-entry').length;
 
+        // TODO : rewrite with .index()
         for(var i = 1; i <= qs_cnt; ++i) {
             var name = $('.qs-entry:nth-child(' + String(i) + ') .qs-name').val();
             var type = $('.qs-entry:nth-child(' + String(i) + ') .qs-type').val();
@@ -306,14 +307,14 @@ $(function()
             });
         }
         var jqxhr = $.post('/topics/store',
-            {
-                '_token' : '{{ csrf_token() }}',
-                'data' : data,
-                'name' : '{{ $name }}',
-                'description' : $('#description').val(),
-                'is_unlisted' : $('#unlisted').is(':checked') ? 1 : 0,
-                'close_at' : 0
-            }, function(returned_id) {
+        {
+            '_token' : '{{ csrf_token() }}',
+            'data' : data,
+            'name' : '{{ $name }}',
+            'description' : $('#description').val(),
+            'is_unlisted' : $('#unlisted').is(':checked') ? 1 : 0,
+            'close_at' : 0
+        }, function(returned_id) {
             window.location = '{{ url('topics') }}/' + String(returned_id)
         });
 
