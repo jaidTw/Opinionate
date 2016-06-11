@@ -28,6 +28,7 @@ Route::get('/topics/store', function() { return redirect('/topics'); });
 Route::any('/topics/{id}', 'TopicController@show');
 Route::any('/topics/{id}/count', 'QuestionSetController@index');
 Route::post('/topics/{id}/update', 'TopicController@update')->middleware('auth');
+Route::post('/topics/{id}/destroy', 'TopicController@destroy')->middleware('auth');
 Route::post('/topics/{id}/ballot', 'BallotController@index');
 Route::any('/topics/{id}/{qsid}', 'QuestionSetController@show');
 

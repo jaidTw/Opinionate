@@ -18,8 +18,8 @@ class CreateOptionsTable extends Migration
             $table->bigInteger('topic_id')->unsigned();
             $table->string('content');
             $table->primary(['id', 'question_set_id', 'topic_id']);
-            $table->foreign('question_set_id')->references('id')->on('question_sets');
-            $table->foreign('topic_id')->references('id')->on('topics');
+            $table->foreign(array('question_set_id', 'topic_id'))
+                ->references(array('id', 'topic_id'))->on('question_sets');
         });
     }
 

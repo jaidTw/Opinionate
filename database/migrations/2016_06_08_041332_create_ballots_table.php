@@ -20,9 +20,8 @@ class CreateBallotsTable extends Migration
             $table->timestamp('cast_at');
             $table->primary(['user_id', 'topic_id', 'question_set_id', 'option_id']);
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('topic_id')->references('id')->on('topics');
-            $table->foreign('question_set_id')->references('id')->on('question_sets');
-            $table->foreign('option_id')->references('id')->on('options');
+            $table->foreign(Array('option_id', 'question_set_id', 'topic_id'))
+                ->references(Array('id', 'question_set_id', 'topic_id'))->on('options');
         });
     }
 

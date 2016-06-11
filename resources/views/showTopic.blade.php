@@ -16,6 +16,11 @@
                     <span class="glyphicon glyphicon-pencil"> </span>
                 </button>
             </div>
+            <div class="col-md-1">
+                <button id="topic-delete" type="button" class="btn btn-danger">
+                    Delete Topic
+                </button>
+            </div>
         @endcan
         </div>
     </div>
@@ -44,7 +49,7 @@
                     <h3> Question Sets
                     @can('update-topic', $topic)
                         <button id="qs-edit" type="button" class="close">
-                         <span class="glyphicon glyphicon-pencil"></span>
+                            <span class="glyphicon glyphicon-pencil"></span>
                         </button>
                     @endcan
                     </h3>
@@ -52,6 +57,21 @@
 
                 <div id="qs-list" class="panel-body">
                     @include('showQuestionSet')
+
+                @can('update-topic', $topic)
+                    <div class="row">
+                        <div class="col-md-1">
+                            <button class="btn btn-primary qs-add qs-edit-control hidden">
+                                Add Question Set
+                            </button>
+                        </div>
+                        <div class="col-md-1 col-md-offset-9">
+                            <button class="btn btn-danger qs-cancel qs-edit-control hidden">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                @endcan
                 </div>
             </div>
         </div>
@@ -114,6 +134,41 @@
         </div>
     </div>
 </div>
+<div id="delete-modal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Warning!</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>
+                            You are going to delete the topic. <br/>
+                            this will destroy all the things related (question sets, ballots etc.)
+                        </p>
+                    </div>
+                </div>
+                <form class="form-horizontal" role="form" method="POST" action="{{ url('/topics/' . $topic->id . '/destroy') }}">
+                    {{ csrf_field() }}
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-4">
+                            <button class="btn submit btn-primary">
+                                Confirm
+                            </button>
+                            <button class="btn btn-default">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @endcan
 <div id="ballot-modal" class="modal fade">
     <div class="modal-dialog">
@@ -139,12 +194,14 @@
 $(function()
 {
     loadQuestionSets();
+// If user is logged in, register voting handlers
 @if (Auth::check())
     $(document).on('click', '.option', function(e) {
         e.preventDefault();
 
         var qs_id = $(this).parents('.qs-entry').index() + 1;
         var opt_id = $('.qs-entry:nth(' + String(qs_id - 1) + ') .option').index($(this)) + 1;
+
         if($(this).hasClass('multi')) {
             if($(this).hasClass('list-group-item-info')) {
                 //destroy
@@ -214,6 +271,7 @@ $(function()
             }
         }
     });
+// If is not logged in, trigger the hint.
 @else
     $(document).on('click', '.option', function(e) {
         $('.popover').remove();
@@ -227,8 +285,9 @@ $(function()
             'placement' : 'right'
         }).popover('show');
     });
-
 @endif
+
+// If user is the proposer, register the edit handlers
 @can('update-topic', $topic)
     $(document).on('click', '#topic-name-edit', function(e) {
         $('#topic-name').parent().addClass('hidden');
@@ -297,8 +356,24 @@ $(function()
 
         $(this).attr('id', 'topic-attr-edit').blur();
     });
-@endcan
 
+    $(document).on('click', '#qs-edit', function(e) {
+        $('.qs-edit-control').removeClass('hidden');
+
+        $(this).attr('id', 'qs-update').blur();
+    });
+
+    $(document).on('click', '#qs-update', function(e) {
+        $('.qs-edit-control').addClass('hidden');
+
+        $(this).attr('id', 'qs-edit').blur();
+    });
+
+    $(document).on('click', '#topic-delete', function(e) {
+        $('#delete-modal').modal('show');
+    });
+@endcan
+// register handlers for ballot querying and question sets loading.
     $(document).on('click', '.not-anonymous', function(e) {
         e.stopPropagation();
 
@@ -358,18 +433,19 @@ function loadQuestionSet(index) {
             newOption.appendTo(entry.find('ul'));
         }
     @if(Auth::check())
+        // Change the color
         for(var ballot_idx = 0; ballot_idx < data['user_ballot'].length; ++ballot_idx) {
             entry.find('.option:nth(' + String(data['user_ballot'][ballot_idx]['option_id'] - 1) +')').addClass('list-group-item-info');
         }
     @endif
-        // Back-end will take care of the visibility.
+        // Set badge
         for(var ballot_count_idx = 0; ballot_count_idx < data['all_ballots'].length; ++ballot_count_idx) {
             entry.find('.badge:nth(' + String(data['all_ballots'][ballot_count_idx]['option_id']) + ')').html(data['all_ballots'][ballot_count_idx]['count']);
         }
     }).error(function(data) {
-            // TODO : add more complicated error message here.
-            $('#error-modal .modal-body p').html("Some error occured while loading question sets! Please try again later.");
-            $('#error-modal').modal('show');
+        // TODO : add more complicated error message here.
+        $('#error-modal .modal-body p').html("Some error occured while loading question sets! Please try again later.");
+        $('#error-modal').modal('show');
     });
 }
 </script>

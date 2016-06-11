@@ -88,7 +88,7 @@ class TopicController extends Controller
                     strtoupper($data['type']),
                     $data['is_multiple_choice'],
                     $data['is_anonymous'],
-                    strtoupper($data['result_visibility']),
+                    strtoupper(strtr($data['result_visibility'], ' ', '_')),
                 ]);
 
                 // Insert options
@@ -175,5 +175,14 @@ class TopicController extends Controller
         if(Gate::denies('update-topic', $topic[0])) {
             return redirect('/topics');
         }
+
+        DB::transaction(function() use (&$id) {
+            DB::delete('DELETE FROM ballots WHERE topic_id = ?', [$id]);
+            DB::delete('DELETE FROM options WHERE topic_id = ?', [$id]);
+            DB::delete('DELETE FROM question_sets WHERE topic_id = ?', [$id]);
+            DB::delete('DELETE FROM topics WHERE id = ?', [$id]);
+        });
+        
+        return redirect('/topics');
     }
 }

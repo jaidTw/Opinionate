@@ -175,7 +175,7 @@
                             </button>
                         </div>
                         <div class="col-md-1 col-md-offset-4">
-                            <button class="btn btn-primary btn-submit">
+                            <button class="btn btn-success btn-submit">
                                 Create
                             </button>
                         </div>
