@@ -103,30 +103,48 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">
-                <span aria-hidden="true">&times;</span>
-                <span class="sr-only">Close</span></button>
-            <h4 class="modal-title">Oops!</h4>
-        </div>
-        <div class="modal-body">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title">Oops!</h4>
+            </div>
+            <div class="modal-body">
             <p></p>
+            </div>
         </div>
     </div>
 </div>
 @endcan
+<div id="ballot-modal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Ballots</h4>
+            </div>
+            <div class="modal-body">
+                <li class="list-group-item hidden"><a class="h4"></a></li>
+                <ul class="list-group">
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
 <script>
 $(function()
 {
+    loadQuestionSets();
 @if (Auth::check())
     $(document).on('click', '.option', function(e) {
         e.preventDefault();
 
         var qs_id = $(this).parents('.qs-entry').index() + 1;
         var opt_id = $('.qs-entry:nth(' + String(qs_id - 1) + ') .option').index($(this)) + 1;
-        console.log([qs_id,opt_id]);
-
         if($(this).hasClass('multi')) {
             if($(this).hasClass('list-group-item-info')) {
                 //destroy
@@ -137,7 +155,7 @@ $(function()
                     'optid' : opt_id
                 }, function(data) {
                     loadQuestionSet(qs_id - 1);
-                }).error(function(data) {
+                }).ballot(function(data) {
                     loadQuestionSet(qs_id - 1);
                     // May add more complicated error message here.
                     $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
@@ -280,7 +298,35 @@ $(function()
         $(this).attr('id', 'topic-attr-edit').blur();
     });
 @endcan
-    loadQuestionSets();
+
+    $(document).on('click', '.not-anonymous', function(e) {
+        e.stopPropagation();
+
+        var option = $(this).parents('.option');
+        var qs_id = option.parents('.qs-entry').index() + 1;
+        var opt_id = $('.qs-entry:nth(' + String(qs_id - 1) + ') .option').index(option) + 1;
+
+        $.post('/topics/' + String({{$topic->id}}) + '/ballot',
+        {
+            '_token' : '{{ csrf_token() }}',
+            'qsid' : qs_id,
+            'optid' : opt_id
+        }, function(data) {
+
+            $('#ballot-modal .list-group .list-group-item').remove();
+
+            var template = $('#ballot-modal .list-group-item:first');
+            for(var idx in data) {
+                template.clone().removeClass('hidden').appendTo(template.siblings('.list-group')).find('a').html(data[idx]['name']);
+            }
+        }).error(function(data) {
+            // May add more complicated error message here.
+            $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
+            $('#error-modal').modal('show');
+        });
+
+        $('#ballot-modal').modal('show');
+    });
 });
 
 function loadQuestionSets() {
@@ -298,6 +344,9 @@ function loadQuestionSet(index) {
         if(data['question_set']['is_multiple_choice']){
             entry.find('.option-template').addClass('multi');
         }
+        if(!data['question_set']['is_anonymous']){
+            entry.find('.option-template .badge').addClass('not-anonymous');
+        }
 
         entry.find('.option').remove();
         for(var opt_idx = 0; opt_idx < data['options'].length; ++opt_idx) {
@@ -310,14 +359,17 @@ function loadQuestionSet(index) {
         }
     @if(Auth::check())
         for(var ballot_idx = 0; ballot_idx < data['user_ballot'].length; ++ballot_idx) {
-            entry.find('.option:nth(' + String(data['user_ballot'][ballot_idx]['option_id'] - 1) +')')
-                .addClass('list-group-item-info');
+            entry.find('.option:nth(' + String(data['user_ballot'][ballot_idx]['option_id'] - 1) +')').addClass('list-group-item-info');
         }
     @endif
+        // Back-end will take care of the visibility.
         for(var ballot_count_idx = 0; ballot_count_idx < data['all_ballots'].length; ++ballot_count_idx) {
-            entry.find('.badge:nth(' + String(ballot_count_idx + 1) + ')').html(data['all_ballots'][ballot_count_idx]['count']);
+            entry.find('.badge:nth(' + String(data['all_ballots'][ballot_count_idx]['option_id']) + ')').html(data['all_ballots'][ballot_count_idx]['count']);
         }
     }).error(function(data) {
+            // May add more complicated error message here.
+            $('#error-modal .modal-body p').html("Some error occured while loading question sets! Please try again later.");
+            $('#error-modal').modal('show');
     });
 }
 </script>

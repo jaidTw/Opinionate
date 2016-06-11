@@ -54,7 +54,6 @@ class TopicController extends Controller
             'data.*.opts.*' => 'required',
             'data.*.type' => Array('required', 'regex:/^General$|^Location$|^Time$|^Image$|^Audio$|^Video$/'),
             'data.*.is_multiple_choice' => 'boolean | required',
-            'data.*.is_synced' => 'boolean | required',
             'data.*.is_anonymous' => 'boolean | required',
             'data.*.result_visibility' => Array('required', 'regex:/^Visible$|^Invisible$|^Visible after ended$/'),
         ]);
@@ -80,15 +79,14 @@ class TopicController extends Controller
             for($qs_id = 1; $qs_id <= count($request['data']); ++$qs_id) {
                 $data = $request['data'][$qs_id - 1];
 
-                DB::insert('INSERT INTO question_sets(id, topic_id, name, type, is_multiple_choice, is_synced, is_anonymous, result_visibility)
-                            VALUES(?, ?, ?, ?, ?, ?, ?, ?)',
+                DB::insert('INSERT INTO question_sets(id, topic_id, name, type, is_multiple_choice, is_anonymous, result_visibility)
+                            VALUES(?, ?, ?, ?, ?, ?, ?)',
                 [
                     $qs_id,
                     $topic_id,
                     $data['name'],
                     strtoupper($data['type']),
                     $data['is_multiple_choice'],
-                    $data['is_synced'],
                     $data['is_anonymous'],
                     strtoupper($data['result_visibility']),
                 ]);
@@ -114,17 +112,14 @@ class TopicController extends Controller
     {
         $topic = DB::select('SELECT * FROM topics WHERE id = ?', [$id]);
         $proposer = DB::select('SELECT name FROM users WHERE id = ?', [$topic[0]->user_id]);
-        $question_sets = DB::select('SELECT id, name, type, is_multiple_choice, is_synced, is_anonymous, result_visibility
+        $question_sets = DB::select('SELECT id, name, type, is_multiple_choice, is_anonymous, result_visibility
             FROM question_sets WHERE topic_id = ?', [$id]);
 
         $options = Array();
-        $ballots = Array();
 
         // here could be optimize
         foreach($question_sets as $qs) {
             $options[] = DB::select('SELECT id, content FROM options WHERE topic_id = ? AND question_set_id = ?', [$id, $qs->id]);
-            $ballots[] = DB::select('SELECT question_set_id, option_id
-            FROM ballots WHERE topic_id = ? AND user_id = ?', [$id, Auth::user()->id]);
         }
 
         return view('showTopic',
@@ -132,8 +127,7 @@ class TopicController extends Controller
             'topic' => $topic[0],
             'proposer' => $proposer[0],
             'question_sets' => $question_sets,
-            'options' => $options,
-            'ballots' => $ballots
+            'options' => $options
         ]);
     }
     

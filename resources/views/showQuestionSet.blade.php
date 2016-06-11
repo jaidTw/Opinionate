@@ -11,11 +11,6 @@
             @else
                 <span class="label label-primary">Single choice</span>
             @endif
-            @if($question_sets[$qs_idx]->is_synced)
-                <span class="label label-success">Synchronous</span>
-            @else
-                <span class="label label-success">Asynchronous</span>
-            @endif
             @if($question_sets[$qs_idx]->is_anonymous)
                 <span class="label label-warning">Anonymous</span>
             @endif

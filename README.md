@@ -25,17 +25,29 @@ php artisan migrate
 ```
 
 # Todo
-* `browseTopic`
-    * use laravel paginator
+* `showTopic`
+    * Change edit button to save and cancel
+    * edit end time
+    * end time handling
+    * Add/delete question sets
+        * each topic need to have at least one question set.
+    * Update question sets
+        * Visibility
+        * Add options
+    * Delete Topic
 * `createTopic`
     * question sets and options number constraint.
         - trigger error by the number of DOM elements.
     * `close_at` timestamp validation(by regex or something more complicated).
     * rewrite post with jQuery `.index()`
-* Change edit button to save and cancel
+* `browseTopic`
+    * use laravel paginator
+    * `unlist` hadling
+* add `Chart.js`
 * Landing Page
-* User Dashboard
-* Destroy feature
+* User dashboard
+* User page
+    * All name link to user page.
 * Validation error message hadling.
 * Replace pure sql statements with Eloquent ORM after demo
 * I18N + Chinese L10N

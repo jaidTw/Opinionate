@@ -42,12 +42,6 @@
                                 </div>
                                 <div class="checkbox col-md-12">
                                     <label>
-                                        <input class="qs-sync" type="checkbox" value=""/>
-                                        Synchronized
-                                    </label>
-                                </div>
-                                <div class="checkbox col-md-12">
-                                    <label>
                                         <input class="qs-anonymous" type="checkbox" value=""/>
                                         Anonymous
                                     </label>
@@ -125,12 +119,6 @@
                                             <label>
                                                 <input class="qs-mult" type="checkbox" value=""/>
                                                 Multiple Choice
-                                            </label>
-                                        </div>
-                                        <div class="checkbox col-md-12">
-                                            <label>
-                                                <input class="qs-sync" type="checkbox" value=""/>
-                                                Synchronized
                                             </label>
                                         </div>
                                         <div class="checkbox col-md-12">
@@ -275,16 +263,14 @@ $(function()
             var name = $('.qs-entry:nth-child(' + String(i) + ') .qs-name').val();
             var type = $('.qs-entry:nth-child(' + String(i) + ') .qs-type').val();
 
-            var is_multiple_choice, is_synced, is_anonymous, result_visibility;
+            var is_multiple_choice, is_anonymous, result_visibility;
             if($('#same-attr')[0].checked) {
                 is_multiple_choice = $('.qs-attrs:first .qs-mult').is(':checked') ? 1 : 0;
-                is_synced = $('.qs-attrs:first .qs-sync').is(':checked') ? 1 : 0;
                 is_anonymous = $('.qs-attrs:first .qs-anonymous').is(':checked') ? 1 : 0;
                 result_visibility = $('.qs-attrs:first .qs-vis').val();
             }
             else {
                 is_multiple_choice = $('.qs-entry:nth-child(' + String(i) + ') .qs-mult').is(':checked') ? 1 : 0;
-                is_synced = $('.qs-entry:nth-child(' + String(i) + ') .qs-sync').is(':checked') ? 1 : 0;
                 is_anonymous = $('.qs-entry:nth-child(' + String(i) + ') .qs-anonymous').is(':checked') ? 1 : 0;
                 result_visibility = $('.qs-entry:nth-child(' + String(i) + ') .qs-vis').val();   
             }
@@ -300,7 +286,6 @@ $(function()
                 'name' : name,
                 'type' : type,
                 'is_multiple_choice' : is_multiple_choice,
-                'is_synced' : is_synced,
                 'is_anonymous' : is_anonymous,
                 'result_visibility' : result_visibility,
                 'opts' : opts

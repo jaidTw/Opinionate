@@ -18,7 +18,6 @@ class CreateQuestionSetsTable extends Migration
             $table->string('name');
             $table->enum('type', ['GENERAL', 'LOCATION', 'TIME', 'IMAGE', 'AUDIO', 'VIDEO']);
             $table->boolean('is_multiple_choice');
-            $table->boolean('is_synced');
             $table->boolean('is_anonymous');
             $table->enum('result_visibility', ['VISIBLE', 'VISIBLE_AFTER_ENDED', 'INVISIBLE']);
             $table->primary(['id', 'topic_id']);

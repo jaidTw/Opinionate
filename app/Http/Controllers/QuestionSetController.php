@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -43,16 +44,16 @@ class QuestionSetController extends Controller
      */
     public function show($id, $qsid)
     {
-        $question_sets = DB::select('SELECT id, name, type, is_multiple_choice, is_synced, is_anonymous, result_visibility
+        $question_set = DB::select('SELECT id, name, type, is_multiple_choice, is_anonymous, result_visibility
             FROM question_sets WHERE topic_id = ? AND id = ?', [$id, $qsid]
-        );
+        )[0];
 
         $options = DB::select('SELECT id, content
             FROM options WHERE topic_id = ? AND question_set_id = ?', [$id, $qsid]
         );
 
         $response = Array(
-            'question_set' => $question_sets[0],
+            'question_set' => $question_set,
             'options' => $options
         );
 
@@ -68,11 +69,17 @@ class QuestionSetController extends Controller
             $response['user_ballot'] = $user_ballot;
         }
 
-        $all_ballots = DB::select('SELECT COUNT(*) AS count
-            FROM ballots WHERE topic_id = ? AND question_set_id = ? GROUP BY option_id', [$id, $qsid]
-        );
+        $topic = DB::select('SELECT user_id FROM topics WHERE id = ?', [$id])[0];
 
-        $response['all_ballots'] = $all_ballots;
+        if($question_set->result_visibility === "VISIBLE" || Gate::allows('update-topic', $topic)) {
+
+            $all_ballots = DB::select('SELECT COUNT(*) AS count, option_id
+                FROM ballots WHERE topic_id = ? AND question_set_id = ? GROUP BY option_id', [$id, $qsid]
+            );
+
+            $response['all_ballots'] = $all_ballots;
+        }
+
         return response()->json($response);
     }
 
