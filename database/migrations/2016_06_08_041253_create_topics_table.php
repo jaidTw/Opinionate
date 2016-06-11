@@ -19,7 +19,7 @@ class CreateTopicsTable extends Migration
             $table->text('description');
             $table->boolean('is_unlisted');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->timestamp('close_at');
+            $table->timestamp('close_at')->nullable();
             $table->timestamps();
         });
     }

@@ -18,6 +18,9 @@ class BallotController extends Controller
      */
     public function index(Request $request, $id)
     {
+        // TODO : Add end time checking
+        // TODO : Need to check if question set is anonymous
+
         $result = DB::select('SELECT id, name FROM (
                 SELECT user_id AS id FROM ballots WHERE topic_id = ? AND question_set_id = ? AND option_id = ?
             ) AS ballot NATURAL JOIN users',
@@ -38,8 +41,8 @@ class BallotController extends Controller
      */
     public function store(Request $request, $id)
     {
-        // to perform id checking
         DB::transaction(function() use(&$request, $id) {
+
             DB::insert('INSERT INTO ballots(user_id, topic_id, question_set_id, option_id, cast_at)
                 VALUES(?, ?, ?, ?, CURRENT_TIMESTAMP)',
             [
@@ -60,8 +63,10 @@ class BallotController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // to perform id checking
         DB::transaction(function() use(&$request, $id) {
+            // TODO : Add end time checking
+            // TODO : need to perform id existence checking
+
             $result = DB::select('SELECT COUNT(*) AS count FROM ballots
                 WHERE user_id = ? AND topic_id = ? AND question_set_id = ?',
             [
@@ -101,8 +106,9 @@ class BallotController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        // to perform id checking
         DB::transaction(function() use(&$request, $id) {
+            // TODO : Add end time checking
+
             DB::delete('DELETE FROM ballots
                 WHERE user_id = ? AND topic_id = ? AND question_set_id = ? AND option_id = ?',
             [

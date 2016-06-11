@@ -22,6 +22,7 @@
                     <th> Proposer </th>
                 </tr>
                 @foreach($topics as $topic)
+                    @if(!$topic->is_unlisted)
                     <tr>
                         <td> {{ $topic->id }} </td>
                         <td>
@@ -35,6 +36,7 @@
                             <!--</a>-->
                         </td>
                     </tr>
+                    @endif
                 @endforeach
                 </table>
             </div>

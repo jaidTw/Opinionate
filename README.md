@@ -37,12 +37,12 @@ php artisan migrate
     * Delete Topic
 * `createTopic`
     * question sets and options number constraint.
-        - trigger error by the number of DOM elements.
+        * trigger error by the number of DOM elements.
+        * validate length at controller
     * `close_at` timestamp validation(by regex or something more complicated).
     * rewrite post with jQuery `.index()`
 * `browseTopic`
     * use laravel paginator
-    * `unlist` hadling
 * add `Chart.js`
 * Landing Page
 * User dashboard

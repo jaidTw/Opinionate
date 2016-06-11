@@ -157,7 +157,7 @@ $(function()
                     loadQuestionSet(qs_id - 1);
                 }).ballot(function(data) {
                     loadQuestionSet(qs_id - 1);
-                    // May add more complicated error message here.
+                    // TODO : add more complicated error message here.
                     $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
                     $('#error-modal').modal('show');
                 });
@@ -173,7 +173,7 @@ $(function()
                     loadQuestionSet(qs_id - 1);
                 }).error(function(data) {
                     loadQuestionSet(qs_id - 1);
-                    // May add more complicated error message here.
+                    // TODO : add more complicated error message here.
                     $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
                     $('#error-modal').modal('show');
                 });
@@ -191,7 +191,7 @@ $(function()
                     loadQuestionSet(qs_id - 1);
                 }).error(function(data) {
                     loadQuestionSet(qs_id - 1);
-                    // May add more complicated error message here.
+                    // TODO : add more complicated error message here.
                     $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
                     $('#error-modal').modal('show');
                 });
@@ -207,7 +207,7 @@ $(function()
                     loadQuestionSet(qs_id - 1);
                 }).error(function(data) {
                     loadQuestionSet(qs_id - 1);
-                    // May add more complicated error message here.
+                    // TODO : add more complicated error message here.
                     $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
                     $('#error-modal').modal('show');
                 });
@@ -250,7 +250,7 @@ $(function()
             $('#topic-name').parent().removeClass('hidden');
             $('#topic-name-input').parent().addClass('hidden');
 
-            // May add more complicated error message here.
+            // TODO : add more complicated error message here.
             $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
             $('#error-modal').modal('show');
         });
@@ -276,7 +276,7 @@ $(function()
             $('#topic-des-input').addClass('hidden');
             $('#topic-des').removeClass('hidden');
 
-            // May add more complicated error message here.
+            // TODO : add more complicated error message here.
             $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
             $('#error-modal').modal('show');
         });
@@ -320,7 +320,7 @@ $(function()
                 template.clone().removeClass('hidden').appendTo(template.siblings('.list-group')).find('a').html(data[idx]['name']);
             }
         }).error(function(data) {
-            // May add more complicated error message here.
+            // TODO : add more complicated error message here.
             $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
             $('#error-modal').modal('show');
         });
@@ -367,7 +367,7 @@ function loadQuestionSet(index) {
             entry.find('.badge:nth(' + String(data['all_ballots'][ballot_count_idx]['option_id']) + ')').html(data['all_ballots'][ballot_count_idx]['count']);
         }
     }).error(function(data) {
-            // May add more complicated error message here.
+            // TODO : add more complicated error message here.
             $('#error-modal .modal-body p').html("Some error occured while loading question sets! Please try again later.");
             $('#error-modal').modal('show');
     });
