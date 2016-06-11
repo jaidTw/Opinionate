@@ -95,15 +95,20 @@
                     <p class="topic-attr"> {{ $topic->is_unlisted ? 'Yes' : 'No' }} </p>
                 @can('update-topic', $topic)
                     <select id="topic-unlist-input" class="form-control hidden">
-                        <option>Yes</option>
-                        <option>No</option>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
                     </select>
                 @endcan
 
                     <h3> End Time </h3>
                     <p class="topic-attr"> {{ $topic->close_at }} </p>
                 @can('update-topic', $topic)
-                    <input id="topic-end-time-input" class="form-control hidden" type="text"/>
+                    <div class='input-group date hidden' id='topic-end-time-input'>
+                        <input type='text' class="form-control" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
                 @endcan
 
                     <h3> Created Time </h3>
@@ -148,7 +153,7 @@
                     <div class="col-md-12">
                         <p>
                             You are going to delete the topic. <br/>
-                            this will destroy all the things related (question sets, ballots etc.)
+                            This will destroy all the things related (question sets, ballots, etc.)
                         </p>
                     </div>
                 </div>
@@ -194,6 +199,7 @@
 $(function()
 {
     loadQuestionSets();
+
 // If user is logged in, register voting handlers
 @if (Auth::check())
     $(document).on('click', '.option', function(e) {
@@ -289,6 +295,14 @@ $(function()
 
 // If user is the proposer, register the edit handlers
 @can('update-topic', $topic)
+    
+    $('#topic-end-time-input').datetimepicker({
+        useCurrent : false,
+        format : 'YYYY-MM-DD HH:mm:ss',
+        minDate : moment().add(10, 'minutes'),
+        defaultDate : '{{$topic->close_at}}'
+    });
+
     $(document).on('click', '#topic-name-edit', function(e) {
         $('#topic-name').parent().addClass('hidden');
         $('#topic-name-input').val($('#topic-name').html()).parent().removeClass('hidden');
@@ -343,18 +357,32 @@ $(function()
 
     $(document).on('click', '#topic-attr-edit', function(e) {
         $('.topic-attr').addClass('hidden');
-        $('#topic-unlist-input').removeClass('hidden');
+        $('#topic-unlist-input').val({{$topic->is_unlisted}}).removeClass('hidden');
         $('#topic-end-time-input').removeClass('hidden');
         
         $(this).attr('id', 'topic-attr-update').blur();
     });
 
     $(document).on('click', '#topic-attr-update', function(e) {
-        $('.topic-attr').removeClass('hidden');
-        $('#topic-unlist-input').addClass('hidden');
-        $('#topic-end-time-input').addClass('hidden');
-
         $(this).attr('id', 'topic-attr-edit').blur();
+
+        $.post('/topics/' + String({{$topic->id}}) + '/update',
+        {
+            '_token' : '{{ csrf_token() }}',
+            'type' : 'attr',
+            'close_at' : $('#topic-end-time-input').data('DateTimePicker').date().format('YYYY-MM-DD HH:mm:ss'),
+            'is_unlisted' : $('#topic-unlist-input').val()
+        }, function(data) {
+            window.location = "/topics/{{$topic->id}}";
+        }).error(function(data) {
+            $('.topic-attr').removeClass('hidden');
+            $('#topic-unlist-input').addClass('hidden');
+            $('#topic-end-time-input').addClass('hidden');
+
+            // TODO : add more complicated error message here.
+            $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
+            $('#error-modal').modal('show');
+        });
     });
 
     $(document).on('click', '#qs-edit', function(e) {

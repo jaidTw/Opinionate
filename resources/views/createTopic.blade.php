@@ -24,7 +24,14 @@
                             <label class="control-label">End Time</label>
                         </div>
                         <div class="col-md-3">
-                            <input id="end-time" class="form-control" type="text"/>
+                            <div class="form-group">
+                                <div class='input-group date' id='datetimepicker'>
+                                    <input type='text' class="form-control" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -192,6 +199,11 @@
 $(function()
 {
     // Register handlers
+    $('#datetimepicker').datetimepicker({
+        format : 'YYYY-MM-DD HH:mm:ss',
+        minDate : moment().add(10, 'minutes')
+    });
+
     $(document).on('click', '.btn-qs-add', function(e) {
         e.preventDefault();
 
@@ -298,7 +310,7 @@ $(function()
             'name' : '{{ $name }}',
             'description' : $('#description').val(),
             'is_unlisted' : $('#unlisted').is(':checked') ? 1 : 0,
-            'close_at' : 0
+            'close_at' : $('#datetimepicker').data('DateTimePicker').date().format('YYYY-MM-DD HH:mm:ss')
         }, function(returned_id) {
             window.location = '{{ url('topics') }}/' + String(returned_id)
         });

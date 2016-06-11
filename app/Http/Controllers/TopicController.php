@@ -45,6 +45,7 @@ class TopicController extends Controller
      */
     public function store(Request $request)
     {
+        //TODO : close_at validation
         $this->validate($request, [
             'name' => 'required',
             'description' => 'required',
@@ -156,6 +157,9 @@ class TopicController extends Controller
         else if($request['type'] === 'des') {
             DB::update('UPDATE topics SET description = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [$request['data'], $id]);
         }
+        else if($request['type'] === 'attr') {
+            DB::update('UPDATE topics SET close_at = ?, is_unlisted = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [$request['close_at'], $request['is_unlisted'], $id]);
+        }
 
         $time = DB::select('SELECT updated_at FROM topics WHERE id = ?', [$id])[0]->updated_at;
 
@@ -182,7 +186,7 @@ class TopicController extends Controller
             DB::delete('DELETE FROM question_sets WHERE topic_id = ?', [$id]);
             DB::delete('DELETE FROM topics WHERE id = ?', [$id]);
         });
-        
+
         return redirect('/topics');
     }
 }
