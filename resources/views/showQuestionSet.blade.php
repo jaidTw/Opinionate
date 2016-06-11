@@ -24,10 +24,12 @@
         <ul class="list-group">
             <a class="list-group-item option-template hidden">
                 <label></label>
+                <span class="badge"></span>
             </a>
         @for($opt_idx = 0; $opt_idx < count($options[$qs_idx]); ++$opt_idx)
             <a class="list-group-item option{{ $question_sets[$qs_idx]->is_multiple_choice ? ' multi' : '' }}">
                 <label> {{ $options[$qs_idx][$opt_idx]->content }}</label>
+                <span class="badge"></span>
             </a>
         @endfor
         </ul>

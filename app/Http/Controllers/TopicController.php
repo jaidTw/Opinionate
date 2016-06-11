@@ -119,7 +119,7 @@ class TopicController extends Controller
 
         $options = Array();
         $ballots = Array();
-        
+
         // here could be optimize
         foreach($question_sets as $qs) {
             $options[] = DB::select('SELECT id, content FROM options WHERE topic_id = ? AND question_set_id = ?', [$id, $qs->id]);

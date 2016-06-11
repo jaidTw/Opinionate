@@ -227,10 +227,7 @@ $(function()
             'type' : 'name',
             'data' : $('#topic-name-input').val(),
         }, function(data) {
-            $('#topic-name').text($('#topic-name-input').val());
-            $('#topic-name').parent().removeClass('hidden');
-            $('#topic-name-input').parent().addClass('hidden');
-            $('#updated-at').html(data['updated_at']);
+            window.location = "/topics/{{$topic->id}}";
         }).error(function(data) {
             $('#topic-name').parent().removeClass('hidden');
             $('#topic-name-input').parent().addClass('hidden');
@@ -256,10 +253,7 @@ $(function()
             'type' : 'des',
             'data' : $('#topic-des-input').val(),
         }, function(data) {
-            $('#topic-des').text($('#topic-des-input').val());
-            $('#topic-des-input').addClass('hidden');
-            $('#topic-des').removeClass('hidden');
-            $('#updated-at').html(data['updated_at']);
+            window.location = "/topics/{{$topic->id}}";
         }).error(function(data) {
             $('#topic-des-input').addClass('hidden');
             $('#topic-des').removeClass('hidden');
@@ -311,15 +305,18 @@ function loadQuestionSet(index) {
             var option = data['options'][opt_idx];
 
             newOption.removeClass('hidden').removeClass('option-template').addClass('option');
-            newOption.children('label').html(option['content']);
+            newOption.children('label').text(option['content']);
             newOption.appendTo(entry.find('ul'));
         }
     @if(Auth::check())
-        for(var ballot_idx = 0; ballot_idx < data['ballots'].length; ++ballot_idx){
-            entry.find('.option:nth(' + String(data['ballots'][ballot_idx]['option_id'] - 1) +')')
+        for(var ballot_idx = 0; ballot_idx < data['user_ballot'].length; ++ballot_idx) {
+            entry.find('.option:nth(' + String(data['user_ballot'][ballot_idx]['option_id'] - 1) +')')
                 .addClass('list-group-item-info');
         }
     @endif
+        for(var ballot_count_idx = 0; ballot_count_idx < data['all_ballots'].length; ++ballot_count_idx) {
+            entry.find('.badge:nth(' + String(ballot_count_idx + 1) + ')').html(data['all_ballots'][ballot_count_idx]['count']);
+        }
     }).error(function(data) {
     });
 }

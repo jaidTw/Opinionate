@@ -23,6 +23,7 @@ class QuestionSetController extends Controller
         );
         return response()->json($result[0]);
     }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -43,15 +44,20 @@ class QuestionSetController extends Controller
     public function show($id, $qsid)
     {
         $question_sets = DB::select('SELECT id, name, type, is_multiple_choice, is_synced, is_anonymous, result_visibility
-            FROM question_sets WHERE topic_id = ? && id = ?', [$id, $qsid]
+            FROM question_sets WHERE topic_id = ? AND id = ?', [$id, $qsid]
         );
 
         $options = DB::select('SELECT id, content
             FROM options WHERE topic_id = ? AND question_set_id = ?', [$id, $qsid]
         );
 
+        $response = Array(
+            'question_set' => $question_sets[0],
+            'options' => $options
+        );
+
         if(Auth::check()) {
-            $ballots = DB::select('SELECT option_id
+            $user_ballot = DB::select('SELECT option_id
                 FROM ballots WHERE topic_id = ? AND question_set_id = ? AND user_id = ?',
             [
                 $id,
@@ -59,18 +65,15 @@ class QuestionSetController extends Controller
                 Auth::user()->id
             ]);
 
-            return response()->json([
-                'question_set' => $question_sets[0],
-                'options' => $options,
-                'ballots' => $ballots
-            ]);
+            $response['user_ballot'] = $user_ballot;
         }
-        else {
-            return response()->json([
-                'question_set' => $question_sets[0],
-                'options' => $options
-            ]);
-        }
+
+        $all_ballots = DB::select('SELECT COUNT(*) AS count
+            FROM ballots WHERE topic_id = ? AND question_set_id = ? GROUP BY option_id', [$id, $qsid]
+        );
+
+        $response['all_ballots'] = $all_ballots;
+        return response()->json($response);
     }
 
     /**
