@@ -47,16 +47,16 @@ class TopicController extends Controller
     {
         //TODO : close_at validation
         $this->validate($request, [
-            'name' => 'required',
-            'description' => 'required',
-            'is_unlisted' => 'boolean|required',
+            'name' => 'required | string | max:255',
+            'description' => 'required | string',
+            'is_unlisted' => 'required | boolean',
             'close_at' => 'required',
-            'data.*.name' => 'required',
-            'data.*.opts.*' => 'required',
-            'data.*.type' => Array('required', 'regex:/^GENERAL$|^LOCATION$|^TIME$|^IMAGE$|^AUDIO$|^VIDEO$/'),
-            'data.*.is_multiple_choice' => 'boolean | required',
-            'data.*.is_anonymous' => 'boolean | required',
-            'data.*.result_visibility' => Array('required', 'regex:/^VISIBLE$|^INVISIBLE$|^VISIBLE_AFTER_ENDED$/'),
+            'data.*.name' => 'required | string | max:255',
+            'data.*.opts.*' => 'required | string | max:255',
+            'data.*.type' => 'required | in:GENERAL,LOCATION,TIME,IMAGE,AUDIO,VIDEO',
+            'data.*.is_multiple_choice' => 'required | boolean',
+            'data.*.is_anonymous' => 'required | boolean',
+            'data.*.result_visibility' => 'required | in:VISIBLE,INVISIBLE,VISIBLE_AFTER_ENDED',
         ]);
 
         $topic_id = 0;
@@ -76,7 +76,7 @@ class TopicController extends Controller
 
             // Insert question sets
             for($qs_id = 1; $qs_id <= count($request['data']); ++$qs_id) {
-                $data = $request['data'][$qs_id - 1];
+                $data = &$request['data'][$qs_id - 1];
 
                 DB::insert('INSERT INTO question_sets(id, topic_id, name, type, is_multiple_choice, is_anonymous, result_visibility)
                             VALUES(?, ?, ?, ?, ?, ?, ?)',
@@ -118,7 +118,8 @@ class TopicController extends Controller
 
         // here could be optimize
         foreach($question_sets as $qs) {
-            $options[] = DB::select('SELECT id, content FROM options WHERE topic_id = ? AND question_set_id = ?', [$id, $qs->id]);
+            $options[] = DB::select('SELECT id, content FROM options
+                WHERE topic_id = ? AND question_set_id = ?', [$id, $qs->id]);
         }
 
         return view('showTopic',
@@ -139,10 +140,27 @@ class TopicController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-        // should add more complex validation rule here
+        // TODO : after end edit constraint
+        // TODO : add close_at validation
         $this->validate($request, [
-            'type' => Array('required', 'regex:/^name$|^des$|^attr$/'),
+            'type' => 'required | in:name,des,attr,qs',
+            'data' => 'sometimes | required_if:type,name | string | max:255',
+            'data' => 'sometimes | required_if:type,des | string',
+            'is_unlisted' => 'sometimes | required_if:type,attr | boolean',
+            'close_at' => 'sometimes | required_if:type,attr',
+            'del' => 'sometimes | required_if:type,qs | required_without:alter',
+            'del.*' => 'sometimes | required_if:type,qs | required_with:del | exists:question_sets,id,topic_id,' . $id,
+            'alter' => 'sometimes | required_if:type,qs | required_without:del',
+            'alter.*.id' => 'sometimes | required_if:type,qs | required_without:del | exists:question_sets,id,topic_id,' . $id,
+            'alter.*.result_visibility' => 'sometimes | required_if:type,qs | required | in:VISIBLE,INVISIBLE,VISIBLE_AFTER_ENDED',
+            'alter.*.opts.*' => 'sometimes | required_if:type,qs | required | string | max:255',
+            'new' => 'sometimes | required_if:type,qs | required',
+            'new.*.name' => 'sometimes | required_if:type,qs | required | string | max:255',
+            'new.*.type' => 'sometimes | required_if:type,qs | required | in:GENERAL,LOCATION,TIME,IMAGE,AUDIO,VIDEO',
+            'new.*.is_multiple_choice' => 'sometimes | required_if:type,qs | required | boolean',
+            'new.*.is_anonymous' => 'sometimes | required_if:type,qs | required | boolean',
+            'new.*.result_visibility' => 'sometimes | required_if:type,qs | required | in:VISIBLE,INVISIBLE,VISIBLE_AFTER_ENDED',
+            'new.*.opts.*' => 'sometimes | required_if:type,qs | required | string | max:255',
         ]);
         
         $topic = DB::select('SELECT * FROM topics WHERE id = ?', [$id]);
@@ -155,18 +173,136 @@ class TopicController extends Controller
             DB::update('UPDATE topics SET name = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [$request['data'], $id]);
         }
         else if($request['type'] === 'des') {
-            DB::update('UPDATE topics SET description = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [$request['data'], $id]);
+            DB::update('UPDATE topics SET description = ?, updated_at = CURRENT_TIMESTAMP
+                WHERE id = ?', [$request['data'], $id]);
         }
         else if($request['type'] === 'attr') {
-            DB::update('UPDATE topics SET close_at = ?, is_unlisted = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [$request['close_at'], $request['is_unlisted'], $id]);
+            DB::update('UPDATE topics SET close_at = ?, is_unlisted = ?, updated_at = CURRENT_TIMESTAMP
+                WHERE id = ?', [$request['close_at'], $request['is_unlisted'], $id]);
         }
         else if($request['type'] === 'qs') {
-            
+            DB::transaction(function() use (&$request, &$id) {
+                DB::connection()->getPdo()->exec( 'LOCK TABLES question_sets WRITE, options WRITE, ballots WRITE' );
+                if(isset($request['del'])) {
+                    foreach($request['del'] as $del_id) {
+                        DB::delete('DELETE FROM ballots WHERE question_set_id = ? AND topic_id = ?',
+                        [
+                            $del_id,
+                            $id
+                        ]);
+                        DB::delete('DELETE FROM options WHERE question_set_id = ? AND topic_id = ?',
+                        [
+                            $del_id,
+                            $id
+                        ]);
+                        DB::delete('DELETE FROM question_sets WHERE id = ? AND topic_id = ?',
+                        [
+                            $del_id,
+                            $id
+                        ]);
+                    }
+                }
+                $new_qs_id = 1;
+                if(isset($request['alter'])) {
+                    foreach($request['alter'] as $task) {
+                        if($new_qs_id != $task['id']) {
+                            // If some qs is deleted, copy the remains to fill the empty
+                            DB::insert('INSERT INTO question_sets(id, topic_id, name, type, is_multiple_choice, is_anonymous, result_visibility)
+                                SELECT ?, topic_id, name, type, is_multiple_choice, is_anonymous, result_visibility
+                                FROM question_sets WHERE id = ? AND topic_id = ?',
+                            [
+                                $new_qs_id,
+                                $task['id'],
+                                $id
+                            ]);
+                            DB::insert('INSERT INTO options(id, question_set_id, topic_id, content)
+                                SELECT id, ?, topic_id, content
+                                FROM options WHERE question_set_id = ? AND topic_id = ?',
+                            [
+                                $new_qs_id,
+                                $task['id'],
+                                $id
+                            ]);
+                            // make the ballots reference the new one
+                            DB::update('UPDATE ballots SET question_set_id = ?
+                                WHERE topic_id = ? AND question_set_id = ?',
+                            [
+                                $new_qs_id,
+                                $id,
+                                $task['id']
+                            ]);
+                            // delete the original one
+                            DB::delete('DELETE FROM options WHERE question_set_id = ? AND topic_id = ?',
+                            [
+                                $task['id'],
+                                $id
+                            ]);
+                            DB::delete('DELETE FROM question_sets WHERE id = ? AND topic_id = ?',
+                            [
+                                $task['id'],
+                                $id
+                            ]);
+                        }
+                        else {
+                            DB::update('UPDATE question_sets SET result_visibility = ? WHERE id = ? AND topic_id = ?',
+                            [
+                                $task['result_visibility'],
+                                $task['id'],
+                                $id
+                            ]);
+                        }
+                        if(isset($task['opts'])) {
+                            // GET CURRENT OPTION COUNT
+                            $opt_idx = DB::select('SELECT count(*) AS aggregate FROM options 
+                                WHERE topic_id = ? AND question_set_id = ?',
+                            [
+                                $id,
+                                $new_qs_id,
+                            ])[0]->aggregate;
+                            print_r($opt_idx);
+                            foreach($task['opts'] as $content) {
+                                $opt_idx += 1;
+                                DB::insert('INSERT INTO options(id, question_set_id, topic_id, content)
+                                    VALUES(?, ?, ?, ?)',
+                                [
+                                    $opt_idx,
+                                    $new_qs_id,
+                                    $id,
+                                    $content
+                                ]);
+                            }
+                        }
+                        $new_qs_id += 1;
+                    }
+                }
+                if(isset($request['new'])) {
+                    foreach($request['new'] as $data) {
+                        DB::insert('INSERT INTO question_sets(id, topic_id, name, type, is_multiple_choice, is_anonymous, result_visibility)
+                                    VALUES(?, ?, ?, ?, ?, ?, ?)',
+                        [
+                            $new_qs_id,
+                            $id,
+                            $data['name'],
+                            $data['type'],
+                            $data['is_multiple_choice'],
+                            $data['is_anonymous'],
+                            $data['result_visibility']
+                        ]);
+
+                        // Insert options
+                        for($opt_id = 1; $opt_id <= count($data['opts']); ++$opt_id) {
+                            DB::insert('INSERT INTO options(id, question_set_id, topic_id, content) VALUES(?, ?, ?, ?)',
+                                [$opt_id, $new_qs_id, $id, $data['opts'][$opt_id - 1]]
+                            );
+                        }
+                        $new_qs_id += 1;
+                    }
+                }
+            DB::connection()->getPdo()->exec( 'UNLOCK TABLES' );
+            });
         }
 
         $time = DB::select('SELECT updated_at FROM topics WHERE id = ?', [$id])[0]->updated_at;
-
-        return response()->json(["updated_at" => $time]);
     }
 
     /**

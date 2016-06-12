@@ -463,17 +463,17 @@ $(function()
                 del_list.push(index + 1);
             }
             else {
-                var opt = [];
+                var opts = [];
                 if($(this).find('.panel-footer label').hasClass('new-opt-hide')) {
                     $(this).find('.new-qs-opt').each(function () {
-                        opt.push($(this).val());
+                        opts.push($(this).val());
                     });
                 }
 
                 alter_list.push({
                     'id' : index + 1,
                     'result_visibility' : $(this).find('.qs-vis').val(),
-                    'opt' : opt
+                    'opts' : opts
                 });
             }
         });
@@ -499,6 +499,20 @@ $(function()
             'new' : new_list
         }
         console.log(data);
+        $.post('/topics/' + String({{$topic->id}}) + '/update',
+        {
+            '_token' : '{{ csrf_token() }}',
+            'type' : 'qs',
+            'del' : del_list,
+            'alter' : alter_list,
+            'new' : new_list
+        }, function(data) {
+            window.location = "/topics/{{$topic->id}}";
+        }).error(function(data) {
+            // TODO : add more complicated error message here.
+            $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
+            $('#error-modal').modal('show');
+        });
     });
 
     $(document).on('click', '.new-opt-show', function(e) {
