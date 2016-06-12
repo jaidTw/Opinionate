@@ -35,7 +35,7 @@
                         </div>
                     </div>
 
-                    <div class="qs-attrs hidden">
+                    <div class="new-qs-attrs hidden">
                         <div class="row form-group">
                             <div class="col-md-1">
                                 <label class="control-label">Attributes</label>
@@ -43,13 +43,13 @@
                             <div class="col-md-11">
                                 <div class="checkbox col-md-12">
                                     <label>
-                                        <input class="qs-mult" type="checkbox" value=""/>
+                                        <input class="new-qs-mult" type="checkbox" value=""/>
                                         Multiple Choice
                                     </label>
                                 </div>
                                 <div class="checkbox col-md-12">
                                     <label>
-                                        <input class="qs-anonymous" type="checkbox" value=""/>
+                                        <input class="new-qs-anonymous" type="checkbox" value=""/>
                                         Anonymous
                                     </label>
                                 </div>
@@ -61,7 +61,7 @@
                                 <label class="control-label">Result Visbility</label>
                             </div>
                             <div class="col-md-3">
-                                <select class="qs-vis form-control">
+                                <select class="new-qs-vis form-control">
                                     <option>Visible</option>
                                     <option>Invisible</option>
                                     <option>Visible after ended</option>
@@ -86,98 +86,14 @@
                         </div>
                     </div>
 
-                    <div class="qs-entry-template panel panel-default" hidden>
-                        <div class="panel-heading"> 
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <input class="qs-name form-control" type="text" placeholder="Question Set Name"/>
-                                </div>
-                                <div class="col-md-1 col-md-offset-7">
-                                    <button type="button" class="close btn-qs-remove">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>                    
-                        <div class="panel-body">
-                            <div class="row form-group">
-                                <div class="col-md-1">
-                                    <label class="control-label">Type</label>
-                                </div>
-                                <div class="col-md-3">
-                                    <select class="qs-type form-control">
-                                        <option>General</option>
-                                        <option>Location</option>
-                                        <option>Time</option>
-                                        <option>Image</option>
-                                        <option>Audio</option>
-                                        <option>Video</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="qs-attrs">
-                                <div class="row form-group">
-                                    <div class="col-md-1">
-                                        <label class="control-label">Attributes</label>
-                                    </div>
-                                    <div class="col-md-11">
-                                        <div class="checkbox col-md-12">
-                                            <label>
-                                                <input class="qs-mult" type="checkbox" value=""/>
-                                                Multiple Choice
-                                            </label>
-                                        </div>
-                                        <div class="checkbox col-md-12">
-                                            <label>
-                                                <input class="qs-anonymous" type="checkbox" value=""/>
-                                                Anonymous
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row form-group">
-                                    <div class="col-md-1">
-                                        <label class="control-label">Result Visbility</label>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <select class="qs-vis form-control">
-                                            <option>Visible</option>
-                                            <option>Invisible</option>
-                                            <option>Visible after ended</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row form-group">
-                                <div class="col-md-1">
-                                    <label class="control-label">Options</label>
-                                </div>
-
-                                <div class="col-md-10 opt-controls">
-                                    <div class="opt-entry col-md-6 input-group form-group">
-                                        <input class="qs-opt form-control" type="text"/>
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-success btn-opt-add" type="button">
-                                                <span class="glyphicon glyphicon-plus"></span>
-                                            </button>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
+                    @include('newQsTemplate')
 
                     <div class="qs-controls">
                     </div>
 
-
                     <div class="form-group">
                         <div class="col-md-1">
-                            <button class="btn btn-primary btn-qs-add">
+                            <button class="btn btn-primary qs-add">
                                 Add Question Set
                             </button>
                         </div>
@@ -204,27 +120,25 @@ $(function()
         minDate : moment().add(10, 'minutes')
     });
 
-    $(document).on('click', '.btn-qs-add', function(e) {
+    $(document).on('click', '.qs-add', function(e) {
         e.preventDefault();
 
         var controlForm = $('.qs-controls:first')
-        var newEntry = $($('.qs-entry-template').clone()).appendTo(controlForm);
+        var newEntry = $($('.new-qs-entry-template').clone()).removeClass('hidden').appendTo(controlForm);
 
-        newEntry.removeAttr('hidden')
-                .removeClass('qs-entry-template')
-                .addClass('qs-entry')
+        newEntry.removeClass('new-qs-entry-template')
+                .addClass('new-qs-entry')
 
         // If same-attr is checked , don't show qs-attrs
         if($('#same-attr')[0].checked) {
-            newEntry.find('.qs-attrs').addClass('hidden')
+            newEntry.find('.new-qs-attrs').addClass('hidden')
         }
-    }).on('click', '.btn-qs-remove', function(e) {
-        $(this).parents('.qs-entry:first').remove();
-        e.preventDefault();
-        return false;
+
+    }).on('click', '.new-qs-remove', function(e) {
+        $(this).parents('.new-qs-entry').remove();
     });
 
-    $(document).on('click', '.btn-opt-add', function(e) {
+    $(document).on('click', '.opt-add', function(e) {
         e.preventDefault();
 
         var controlForm = $(this).parents('.opt-controls:first');
@@ -233,12 +147,12 @@ $(function()
 
         // Clean the value of the new option add setup button
         newEntry.find('input').val('');
-        controlForm.find('.opt-entry:not(:last) .btn-opt-add')
-            .removeClass('btn-opt-add').addClass('btn-opt-remove')
+        controlForm.find('.opt-entry:not(:last) .opt-add')
+            .removeClass('opt-add').addClass('opt-remove')
             .removeClass('btn-success').addClass('btn-danger')
             .html('<span class="glyphicon glyphicon-minus"></span>');
 
-    }).on('click', '.btn-opt-remove', function(e) {
+    }).on('click', '.opt-remove', function(e) {
         $(this).parents('.opt-entry:first').remove();
         e.preventDefault();
         return false;
@@ -248,49 +162,49 @@ $(function()
         e.preventDefault();
 
         if($(this)[0].checked) {
-            $('.qs-attrs:first').removeClass('hidden');
-            $('.qs-entry .qs-attrs').addClass('hidden');
+            $('.new-qs-attrs:first').removeClass('hidden');
+            $('.new-qs-entry .new-qs-attrs').addClass('hidden');
         }
         else {
-            $('.qs-attrs:first').addClass('hidden');
-            $('.qs-entry .qs-attrs').removeClass('hidden');
+            $('.new-qs-attrs:first').addClass('hidden');
+            $('.new-qs-entry .new-qs-attrs').removeClass('hidden');
         }
     });
 
     // Add the first quesetion set and remove the remove button
-    $('.btn-qs-add').trigger('click');
-    $('.btn-qs-remove:last').remove();
+    $('.qs-add').trigger('click');
+    $('.new-qs-remove:last').remove();
 
     // If same-attr is checked by autocomplete, show the general qs-attrs
     if($('#same-attr')[0].checked) {
-        $('.qs-attrs:first').removeClass('hidden');
+        $('.new-qs-attrs:first').removeClass('hidden');
     }
 
     $(document).on('click', '.btn-submit', function(e) {
         var data = [];
-        var qs_cnt = $('.qs-entry').length;
+        var qs_cnt = $('.new-qs-entry').length;
 
         // TODO : rewrite with .index()
         for(var i = 1; i <= qs_cnt; ++i) {
-            var name = $('.qs-entry:nth-child(' + String(i) + ') .qs-name').val();
-            var type = $('.qs-entry:nth-child(' + String(i) + ') .qs-type').val();
+            var name = $('.new-qs-entry:nth-child(' + String(i) + ') .new-qs-name').val();
+            var type = $('.new-qs-entry:nth-child(' + String(i) + ') .new-qs-type').val();
 
             var is_multiple_choice, is_anonymous, result_visibility;
             if($('#same-attr')[0].checked) {
-                is_multiple_choice = $('.qs-attrs:first .qs-mult').is(':checked') ? 1 : 0;
-                is_anonymous = $('.qs-attrs:first .qs-anonymous').is(':checked') ? 1 : 0;
-                result_visibility = $('.qs-attrs:first .qs-vis').val();
+                is_multiple_choice = $('.new-qs-attrs:first .new-qs-mult').is(':checked') ? 1 : 0;
+                is_anonymous = $('.new-qs-attrs:first .new-qs-anonymous').is(':checked') ? 1 : 0;
+                result_visibility = $('.new-qs-attrs:first .new-qs-vis').val();
             }
             else {
-                is_multiple_choice = $('.qs-entry:nth-child(' + String(i) + ') .qs-mult').is(':checked') ? 1 : 0;
-                is_anonymous = $('.qs-entry:nth-child(' + String(i) + ') .qs-anonymous').is(':checked') ? 1 : 0;
-                result_visibility = $('.qs-entry:nth-child(' + String(i) + ') .qs-vis').val();   
+                is_multiple_choice = $('.new-qs-entry:nth-child(' + String(i) + ') .new-qs-mult').is(':checked') ? 1 : 0;
+                is_anonymous = $('.new-qs-entry:nth-child(' + String(i) + ') .new-qs-anonymous').is(':checked') ? 1 : 0;
+                result_visibility = $('.new-qs-entry:nth-child(' + String(i) + ') .new-qs-vis').val();   
             }
             var opts = [];
 
-            var opt_cnt = $('.qs-entry:nth-child(' + String(i) + ') .opt-entry').length;
+            var opt_cnt = $('.new-qs-entry:nth-child(' + String(i) + ') .opt-entry').length;
             for(var j = 1; j <= opt_cnt; ++j) {
-                opts.push($('.qs-entry:nth-child(' + String(i) + ') .opt-entry:nth-child(' + String(j) + ') .qs-opt').val());
+                opts.push($('.new-qs-entry:nth-child(' + String(i) + ') .opt-entry:nth-child(' + String(j) + ') .new-qs-opt').val());
             }
 
             data.push(

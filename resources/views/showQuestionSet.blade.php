@@ -22,11 +22,11 @@
                     @endif
                     </h4>
                 </div>
-                <div class="col-md-3 col-md-offset-3">
+                <div class="col-md-4 col-md-offset-2">
                     <select class="qs-vis form-control qs-edit-control hidden">
-                        <option>Visible</option>
-                        <option>Invisible</option>
-                        <option>Visible after ended</option>
+                        <option value="VISIBLE">Visible</option>
+                        <option value="INVISIBLE">Invisible</option>
+                        <option value="VISIBLE_AFTER_ENDED">Visible after ended</option>
                     </select>
                 </div>
             </div>

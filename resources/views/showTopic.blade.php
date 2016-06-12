@@ -8,16 +8,21 @@
                 <h1 id="topic-name" style="display:inline">{{ $topic->name }}</h1>
             </div>
         @can('update-topic', $topic)
-            <div class="col-md-8 input-group-lg hidden">
+            <div class="col-md-8 input-group-lg topic-name-control hidden">
                 <input id="topic-name-input" class="form-control" type="text"/>
             </div>
             <div class="col-md-1">
-                <button id="topic-name-edit" type="button" class="btn btn-primary">
+                <button id="topic-name-update" type="button" class="btn btn-success btn-lg topic-name-control hidden">
+                    Save
+                </button>
+            </div>
+            <div class="col-md-1">
+                <button id="topic-name-edit" type="button" class="btn btn-primary btn-lg">
                     <span class="glyphicon glyphicon-pencil"> </span>
                 </button>
             </div>
             <div class="col-md-1">
-                <button id="topic-delete" type="button" class="btn btn-danger">
+                <button id="topic-delete" type="button" class="btn btn-danger btn-lg">
                     Delete Topic
                 </button>
             </div>
@@ -41,6 +46,14 @@
                     <p id="topic-des">{{ $topic->description }}</p>
                 @can('update-topic', $topic)
                     <textarea id="topic-des-input" class="form-control hidden" style="resize:none"></textarea>
+                    <div class="row">
+                        <div class="col-md-1 col-md-offset-10">
+                            <br/>
+                            <button id="topic-des-update" type="button" class="btn btn-success hidden">
+                                Save
+                            </button>
+                        </div>
+                    </div>
                 @endcan
                 </div>
             </div>
@@ -59,15 +72,17 @@
                     @include('showQuestionSet')
 
                 @can('update-topic', $topic)
+                    @include('newQsTemplate')
+
                     <div class="row">
                         <div class="col-md-1">
-                            <button class="btn btn-primary qs-add qs-edit-control hidden">
+                            <button id="qs-add" class="btn btn-primary qs-edit-control hidden">
                                 Add Question Set
                             </button>
                         </div>
                         <div class="col-md-1 col-md-offset-9">
-                            <button class="btn btn-danger qs-cancel qs-edit-control hidden">
-                                Cancel
+                            <button id="qs-update" class="btn btn-danger qs-edit-control hidden">
+                                Save
                             </button>
                         </div>
                     </div>
@@ -104,7 +119,7 @@
                     <p class="topic-attr"> {{ $topic->close_at }} </p>
                 @can('update-topic', $topic)
                     <div class='input-group date hidden' id='topic-end-time-input'>
-                        <input type='text' class="form-control" />
+                        <input type='text' class="form-control"/>
                         <span class="input-group-addon">
                             <span class="glyphicon glyphicon-calendar"></span>
                         </span>
@@ -116,6 +131,13 @@
 
                     <h3> Last Edit Time </h3>
                     <p id="updated-at"> {{ $topic->updated_at }} </p>
+                @can('update-topic', $topic)
+                    <div class="col-md-1 col-md-offset-9">
+                        <button id="topic-attr-update" class="btn btn-success hidden">
+                            Save
+                        </button>
+                    </div>
+                @endcan
                 </div>
             </div>
         </div>
@@ -202,7 +224,9 @@ $(function()
 
 // If user is logged in, register voting handlers
 @if (Auth::check())
-    $(document).on('click', '.option', function(e) {
+    $(document).on('click', '.option', vote_action);
+
+    function vote_action(e) {
         e.preventDefault();
 
         var qs_id = $(this).parents('.qs-entry').index() + 1;
@@ -276,7 +300,7 @@ $(function()
                 });
             }
         }
-    });
+    }
 // If is not logged in, trigger the hint.
 @else
     $(document).on('click', '.option', function(e) {
@@ -295,7 +319,7 @@ $(function()
 
 // If user is the proposer, register the edit handlers
 @can('update-topic', $topic)
-    
+    // Setup datetimpicker
     $('#topic-end-time-input').datetimepicker({
         useCurrent : false,
         format : 'YYYY-MM-DD HH:mm:ss',
@@ -303,15 +327,19 @@ $(function()
         defaultDate : '{{$topic->close_at}}'
     });
 
+    // Handlers for edit topic name
     $(document).on('click', '#topic-name-edit', function(e) {
         $('#topic-name').parent().addClass('hidden');
-        $('#topic-name-input').val($('#topic-name').html()).parent().removeClass('hidden');
-        $(this).attr('id', 'topic-name-update');
-    });
+        $('#topic-name-input').val($('#topic-name').html())
+        $('.topic-name-control').removeClass('hidden');
+        $(this).attr('id', 'topic-name-edit-cancel').removeClass('btn-primary').addClass('btn-danger').blur();
 
-    $(document).on('click', '#topic-name-update', function(e) {
-        $(this).attr('id', 'topic-name-edit');
+    }).on('click', '#topic-name-edit-cancel', function(e) {
+        $('.topic-name-control').addClass('hidden');
+        $('#topic-name').parent().removeClass('hidden');
+        $(this).attr('id', 'topic-name-edit').addClass('btn-primary').removeClass('btn-danger').blur();
 
+    }).on('click', '#topic-name-update', function(e) {
         $.post('/topics/' + String({{$topic->id}}) + '/update',
         {
             '_token' : '{{ csrf_token() }}',
@@ -320,8 +348,9 @@ $(function()
         }, function(data) {
             window.location = "/topics/{{$topic->id}}";
         }).error(function(data) {
+            $('.topic-name-control').addClass('hidden');
             $('#topic-name').parent().removeClass('hidden');
-            $('#topic-name-input').parent().addClass('hidden');
+            $('#topic-name-edit-cancel').attr('id', 'topic-name-edit').addClass('btn-primary').removeClass('btn-danger').blur();
 
             // TODO : add more complicated error message here.
             $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
@@ -329,15 +358,20 @@ $(function()
         });
     });
 
+    // Handlers for edit topic description
     $(document).on('click', '#topic-des-edit', function(e) {
         $('#topic-des').addClass('hidden');
         $('#topic-des-input').val($('#topic-des').html()).removeClass('hidden');
-        $(this).attr('id', 'topic-des-update').blur();
-    });
+        $('#topic-des-update').removeClass('hidden');
+        $(this).attr('id', 'topic-des-edit-cancel').blur();
 
-    $(document).on('click', '#topic-des-update', function(e) {
+    }).on('click', '#topic-des-edit-cancel', function(e) {
+        $('#topic-des-input').addClass('hidden');
+        $('#topic-des').removeClass('hidden');
+        $('#topic-des-update').addClass('hidden');
         $(this).attr('id', 'topic-des-edit').blur();
 
+    }).on('click', '#topic-des-update', function(e) {
         $.post('/topics/' + String({{$topic->id}}) + '/update',
         {
             '_token' : '{{ csrf_token() }}',
@@ -348,6 +382,8 @@ $(function()
         }).error(function(data) {
             $('#topic-des-input').addClass('hidden');
             $('#topic-des').removeClass('hidden');
+            $('#topic-des-edit-cancel').attr('id', 'topic-des-edit').blur();
+            $(this).addClass('hidden');
 
             // TODO : add more complicated error message here.
             $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
@@ -355,17 +391,26 @@ $(function()
         });
     });
 
+    // Handlers for edit topic attributes(end time and unlist property)
     $(document).on('click', '#topic-attr-edit', function(e) {
         $('.topic-attr').addClass('hidden');
+        $('#topic-attr-edit-cancel').removeClass('hidden');
         $('#topic-unlist-input').val({{$topic->is_unlisted}}).removeClass('hidden');
+        $('#topic-end-time-input').data('DateTimePicker').minDate(moment().add(10, 'minutes'));
         $('#topic-end-time-input').removeClass('hidden');
+        $('#topic-attr-update').removeClass('hidden');
         
-        $(this).attr('id', 'topic-attr-update').blur();
-    });
+        $(this).attr('id', 'topic-attr-edit-cancel').blur();
 
-    $(document).on('click', '#topic-attr-update', function(e) {
+    }).on('click', '#topic-attr-edit-cancel', function(e) {
+        $('.topic-attr').removeClass('hidden');
+        $('#topic-unlist-input').addClass('hidden');
+        $('#topic-end-time-input').addClass('hidden');
+        $('#topic-attr-update').addClass('hidden');
+        
         $(this).attr('id', 'topic-attr-edit').blur();
 
+    }).on('click', '#topic-attr-update', function(e) {
         $.post('/topics/' + String({{$topic->id}}) + '/update',
         {
             '_token' : '{{ csrf_token() }}',
@@ -378,25 +423,57 @@ $(function()
             $('.topic-attr').removeClass('hidden');
             $('#topic-unlist-input').addClass('hidden');
             $('#topic-end-time-input').addClass('hidden');
-
+            $('#topic-attr-edit-cancel').attr('id', 'topic-attr-edit').blur();
+            $(this).addClass('hidden');
+            
             // TODO : add more complicated error message here.
             $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
             $('#error-modal').modal('show');
         });
     });
 
+    // Handlers for edit question set
     $(document).on('click', '#qs-edit', function(e) {
         $('.qs-edit-control').removeClass('hidden');
+        $(document).off('click', '.option');
 
-        $(this).attr('id', 'qs-update').blur();
-    });
+        $(this).attr('id', 'qs-edit-cancel').blur();
 
-    $(document).on('click', '#qs-update', function(e) {
+    }).on('click', '#qs-edit-cancel', function(e) {
+        $('.new-qs-entry').remove();
         $('.qs-edit-control').addClass('hidden');
+        $('.qs-entry-toDel').css('opacity', '1').removeClass('qs-entry-toDel');
+        $(document).on('click', '.option', vote_action);
 
         $(this).attr('id', 'qs-edit').blur();
+
+    }).on('click', '#qs-update', function(e) {
+        $('.qs-edit-control').addClass('hidden');
+        $(document).on('click', '.option', vote_action);
+
+        $('#qs-edit-cancel').attr('id', 'qs-edit').blur();
+
+    }).on('click', '#qs-add', function(e) {
+        var newEntry = $('.new-qs-entry-template');
+        newEntry.clone()
+                .insertAfter(newEntry)
+                .removeClass('hidden')
+                .removeClass('new-qs-entry-template')
+                .addClass('new-qs-entry')
+
+    }).on('click', '.new-qs-remove', function(e) {
+        $(this).parents('.new-qs-entry').remove();
+
+    }).on('click', '.qs-remove', function(e) {
+        if($(this).parents('.qs-entry').hasClass('qs-entry-toDel')) {
+            $(this).parents('.qs-entry').css('opacity', '1').removeClass('qs-entry-toDel');
+        }
+        else {
+            $(this).parents('.qs-entry').css('opacity', '0.5').addClass('qs-entry-toDel');
+        }
     });
 
+    // Handlers for delete topic
     $(document).on('click', '#topic-delete', function(e) {
         $('#delete-modal').modal('show');
     });
@@ -415,7 +492,6 @@ $(function()
             'qsid' : qs_id,
             'optid' : opt_id
         }, function(data) {
-
             $('#ballot-modal .list-group .list-group-item').remove();
 
             var template = $('#ballot-modal .list-group-item:first');
@@ -450,6 +526,7 @@ function loadQuestionSet(index) {
         if(!data['question_set']['is_anonymous']){
             entry.find('.option-template .badge').addClass('not-anonymous');
         }
+        entry.find('.qs-vis').val(data['question_set']['result_visibility']);
 
         entry.find('.option').remove();
         for(var opt_idx = 0; opt_idx < data['options'].length; ++opt_idx) {
@@ -460,8 +537,9 @@ function loadQuestionSet(index) {
             newOption.children('label').text(option['content']);
             newOption.appendTo(entry.find('ul'));
         }
+
+        // If user is logged in, load the votes and change the color
     @if(Auth::check())
-        // Change the color
         for(var ballot_idx = 0; ballot_idx < data['user_ballot'].length; ++ballot_idx) {
             entry.find('.option:nth(' + String(data['user_ballot'][ballot_idx]['option_id'] - 1) +')').addClass('list-group-item-info');
         }
