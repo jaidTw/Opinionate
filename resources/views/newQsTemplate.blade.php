@@ -18,12 +18,12 @@
             </div>
             <div class="col-md-3">
                 <select class="new-qs-type form-control">
-                    <option>General</option>
-                    <option>Location</option>
-                    <option>Time</option>
-                    <option>Image</option>
-                    <option>Audio</option>
-                    <option>Video</option>
+                    <option value="GENERAL">General</option>
+                    <option value="LOCATION">Location</option>
+                    <option value="TIME">Time</option>
+                    <option value="IMAGE">Image</option>
+                    <option value="AUDIO">Audio</option>
+                    <option value="VIDEO">Video</option>
                 </select>
             </div>
         </div>
@@ -55,9 +55,9 @@
                 </div>
                 <div class="col-md-3">
                     <select class="new-qs-vis form-control">
-                        <option>Visible</option>
-                        <option>Invisible</option>
-                        <option>Visible after ended</option>
+                        <option value="VISIBLE">Visible</option>
+                        <option value="INVISIBLE">Invisible</option>
+                        <option value="VISIBLE_AFTER_ENDED">Visible after ended</option>
                     </select>
                 </div>
             </div>

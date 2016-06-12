@@ -26,23 +26,27 @@ php artisan migrate
 
 # Todo
 * BUG : End Time default date and min date control
-* `showTopic`
+* `showTopic.blade.php`
     * Add/delete question sets
         * each topic need to have at least one question set.
     * Update question sets
         * Visibility
         * Add options
-* `createTopic`
+    * add `Chart.js`
+* `createTopic.blade.php`
     * question sets and options number constraint.
         * trigger error by the number of DOM elements.
         * validate length at controller
-    * rewrite post with jQuery `.index()`
-* `browseTopic`
+    * rewrite post with jQuery iterator
+* `browseTopic.blade.php`
     * use laravel paginator
-* `TopicController`
-    * add `close_at` validation in `@store` and `@update`
+* `TopicController@store`
+    * add `close_at` validation
     * perform question set number checking
-* add `Chart.js`
+* `TopicController@update`
+    * add `close_at` validation
+    * add more compliacated validation rule
+    * perform question set number checking
 * Landing Page
 * User dashboard
 * User page

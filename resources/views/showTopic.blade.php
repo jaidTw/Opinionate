@@ -72,7 +72,9 @@
                     @include('showQuestionSet')
 
                 @can('update-topic', $topic)
-                    @include('newQsTemplate')
+                    <div id="new-qs-control">
+                        @include('newQsTemplate')
+                    </div>
 
                     <div class="row">
                         <div class="col-md-1">
@@ -81,7 +83,7 @@
                             </button>
                         </div>
                         <div class="col-md-1 col-md-offset-9">
-                            <button id="qs-update" class="btn btn-danger qs-edit-control hidden">
+                            <button id="qs-update" class="btn btn-success qs-edit-control hidden">
                                 Save
                             </button>
                         </div>
@@ -348,10 +350,6 @@ $(function()
         }, function(data) {
             window.location = "/topics/{{$topic->id}}";
         }).error(function(data) {
-            $('.topic-name-control').addClass('hidden');
-            $('#topic-name').parent().removeClass('hidden');
-            $('#topic-name-edit-cancel').attr('id', 'topic-name-edit').addClass('btn-primary').removeClass('btn-danger').blur();
-
             // TODO : add more complicated error message here.
             $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
             $('#error-modal').modal('show');
@@ -380,11 +378,6 @@ $(function()
         }, function(data) {
             window.location = "/topics/{{$topic->id}}";
         }).error(function(data) {
-            $('#topic-des-input').addClass('hidden');
-            $('#topic-des').removeClass('hidden');
-            $('#topic-des-edit-cancel').attr('id', 'topic-des-edit').blur();
-            $(this).addClass('hidden');
-
             // TODO : add more complicated error message here.
             $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
             $('#error-modal').modal('show');
@@ -420,12 +413,6 @@ $(function()
         }, function(data) {
             window.location = "/topics/{{$topic->id}}";
         }).error(function(data) {
-            $('.topic-attr').removeClass('hidden');
-            $('#topic-unlist-input').addClass('hidden');
-            $('#topic-end-time-input').addClass('hidden');
-            $('#topic-attr-edit-cancel').attr('id', 'topic-attr-edit').blur();
-            $(this).addClass('hidden');
-            
             // TODO : add more complicated error message here.
             $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
             $('#error-modal').modal('show');
@@ -447,19 +434,13 @@ $(function()
 
         $(this).attr('id', 'qs-edit').blur();
 
-    }).on('click', '#qs-update', function(e) {
-        $('.qs-edit-control').addClass('hidden');
-        $(document).on('click', '.option', vote_action);
-
-        $('#qs-edit-cancel').attr('id', 'qs-edit').blur();
-
     }).on('click', '#qs-add', function(e) {
         var newEntry = $('.new-qs-entry-template');
         newEntry.clone()
-                .insertAfter(newEntry)
+                .appendTo($('#new-qs-control'))
                 .removeClass('hidden')
                 .removeClass('new-qs-entry-template')
-                .addClass('new-qs-entry')
+                .addClass('new-qs-entry');
 
     }).on('click', '.new-qs-remove', function(e) {
         $(this).parents('.new-qs-entry').remove();
@@ -471,8 +452,83 @@ $(function()
         else {
             $(this).parents('.qs-entry').css('opacity', '0.5').addClass('qs-entry-toDel');
         }
+
+    }).on('click', '#qs-update', function() {
+        var del_list = [];
+        var alter_list = [];
+        var new_list = [];
+
+        $('.qs-entry').each(function(index) {
+            if($(this).hasClass('qs-entry-toDel')) {
+                del_list.push(index + 1);
+            }
+            else {
+                var opt = [];
+                if($(this).find('.panel-footer label').hasClass('new-opt-hide')) {
+                    $(this).find('.new-qs-opt').each(function () {
+                        opt.push($(this).val());
+                    });
+                }
+
+                alter_list.push({
+                    'id' : index + 1,
+                    'result_visibility' : $(this).find('.qs-vis').val(),
+                    'opt' : opt
+                });
+            }
+        });
+
+        $('.new-qs-entry').each(function() {
+            var entry = $(this);
+            var opts = [];
+            $(this).find('.new-qs-opt').each(function() {
+                opts.push($(this).val());
+            });
+            new_list.push({
+                'name' : entry.find('.new-qs-name').val(),
+                'type' : entry.find('.new-qs-type').val(),
+                'is_multiple_choice' : entry.find('.new-qs-mult').is(':checked') ? 1 : 0,
+                'is_anonymous' : entry.find('.new-qs-anonymous').is(':checked') ? 1 : 0,
+                'result_visibility' : entry.find('.new-qs-vis').val(),
+                'opts' : opts
+            });
+        });
+        var data = {
+            'del' : del_list,
+            'alter' : alter_list,
+            'new' : new_list
+        }
+        console.log(data);
     });
 
+    $(document).on('click', '.new-opt-show', function(e) {
+        $(this).find('.glyphicon').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-top');
+        $(this).removeClass('new-opt-show').addClass('new-opt-hide')
+        $(this).siblings('.panel-collapse').collapse('show');
+
+    }).on('click', '.new-opt-hide', function(e) {
+        $(this).find('.glyphicon').removeClass('glyphicon-triangle-top').addClass('glyphicon-triangle-bottom');
+        $(this).removeClass('new-opt-hide').addClass('new-opt-show')
+        $(this).siblings('.panel-collapse').collapse('hide');
+    });
+
+    $(document).on('click', '.opt-add', function(e) {
+        e.preventDefault();
+
+        var controlForm = $(this).parents('.opt-controls:first');
+        var currentEntry = $(this).parents('.opt-entry:first');
+        var newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+        // Clean the value of the new option add setup button
+        newEntry.find('input').val('');
+        controlForm.find('.opt-entry:not(:last) .opt-add')
+            .removeClass('opt-add').addClass('opt-remove')
+            .removeClass('btn-success').addClass('btn-danger')
+            .html('<span class="glyphicon glyphicon-minus"></span>');
+
+    }).on('click', '.opt-remove', function(e) {
+        $(this).parents('.opt-entry:first').remove();
+    });
     // Handlers for delete topic
     $(document).on('click', '#topic-delete', function(e) {
         $('#delete-modal').modal('show');
@@ -496,7 +552,11 @@ $(function()
 
             var template = $('#ballot-modal .list-group-item:first');
             for(var idx in data) {
-                template.clone().removeClass('hidden').appendTo(template.siblings('.list-group')).find('a').html(data[idx]['name']);
+                template.clone()
+                        .removeClass('hidden')
+                        .appendTo(template.siblings('.list-group'))
+                        .find('a')
+                        .html(data[idx]['name']);
             }
         }).error(function(data) {
             // TODO : add more complicated error message here.
@@ -533,9 +593,11 @@ function loadQuestionSet(index) {
             var newOption = entry.find('.option-template').clone();
             var option = data['options'][opt_idx];
 
-            newOption.removeClass('hidden').removeClass('option-template').addClass('option');
             newOption.children('label').text(option['content']);
-            newOption.appendTo(entry.find('ul'));
+            newOption.removeClass('hidden')
+                     .removeClass('option-template')
+                     .addClass('option')
+                     .appendTo(entry.find('ul'));
         }
 
         // If user is logged in, load the votes and change the color

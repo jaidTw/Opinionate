@@ -53,16 +53,14 @@ class TopicController extends Controller
             'close_at' => 'required',
             'data.*.name' => 'required',
             'data.*.opts.*' => 'required',
-            'data.*.type' => Array('required', 'regex:/^General$|^Location$|^Time$|^Image$|^Audio$|^Video$/'),
+            'data.*.type' => Array('required', 'regex:/^GENERAL$|^LOCATION$|^TIME$|^IMAGE$|^AUDIO$|^VIDEO$/'),
             'data.*.is_multiple_choice' => 'boolean | required',
             'data.*.is_anonymous' => 'boolean | required',
-            'data.*.result_visibility' => Array('required', 'regex:/^Visible$|^Invisible$|^Visible after ended$/'),
+            'data.*.result_visibility' => Array('required', 'regex:/^VISIBLE$|^INVISIBLE$|^VISIBLE_AFTER_ENDED$/'),
         ]);
 
         $topic_id = 0;
-
         DB::transaction(function() use (&$request, &$topic_id) {
-
             // Insert topic
             DB::insert('INSERT INTO topics(user_id, name, description, is_unlisted, close_at, created_at, updated_at)
                         VALUES(?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)',
@@ -86,10 +84,10 @@ class TopicController extends Controller
                     $qs_id,
                     $topic_id,
                     $data['name'],
-                    strtoupper($data['type']),
+                    $data['type'],
                     $data['is_multiple_choice'],
                     $data['is_anonymous'],
-                    strtoupper(strtr($data['result_visibility'], ' ', '_')),
+                    $data['result_visibility']
                 ]);
 
                 // Insert options
@@ -141,15 +139,17 @@ class TopicController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+        // should add more complex validation rule here
+        $this->validate($request, [
+            'type' => Array('required', 'regex:/^name$|^des$|^attr$/'),
+        ]);
+        
         $topic = DB::select('SELECT * FROM topics WHERE id = ?', [$id]);
 
         if(Gate::denies('update-topic', $topic[0])) {
             return redirect('/topics');
         }
-
-        $this->validate($request, [
-            'type' => Array('required', 'regex:/^name$|^des$|^attr$/'),
-        ]);
         
         if($request['type'] === 'name') {
             DB::update('UPDATE topics SET name = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [$request['data'], $id]);
@@ -159,6 +159,9 @@ class TopicController extends Controller
         }
         else if($request['type'] === 'attr') {
             DB::update('UPDATE topics SET close_at = ?, is_unlisted = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [$request['close_at'], $request['is_unlisted'], $id]);
+        }
+        else if($request['type'] === 'qs') {
+            
         }
 
         $time = DB::select('SELECT updated_at FROM topics WHERE id = ?', [$id])[0]->updated_at;

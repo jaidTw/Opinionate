@@ -45,9 +45,17 @@
         </ul>
     @can('update-topic', $topic)
         <div class="panel-footer qs-edit-control hidden">
-            <button id="opt-add" type="button" class="btn btn-success">
-                <span class="glyphicon glyphicon-plus"> </span>
-            </button>
+            <label class="new-opt-show"><a><span class="glyphicon glyphicon-triangle-bottom"></span> Add more options...</a></label>
+            <div class="opt-controls panel-collapse collapse" role="tabpanel" aria-expanded="false">
+                <div class="opt-entry col-md-6 input-group form-group">
+                    <input class="new-qs-opt form-control" type="text" autocomplete="no" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-success opt-add" type="button">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
         </div>
     @endcan
     </div>
