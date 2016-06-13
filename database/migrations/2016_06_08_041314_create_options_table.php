@@ -19,7 +19,8 @@ class CreateOptionsTable extends Migration
             $table->string('content');
             $table->primary(['id', 'question_set_id', 'topic_id']);
             $table->foreign(array('question_set_id', 'topic_id'))
-                ->references(array('id', 'topic_id'))->on('question_sets');
+                ->references(array('id', 'topic_id'))->on('question_sets')
+                ->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

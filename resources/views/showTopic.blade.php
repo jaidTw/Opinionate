@@ -325,8 +325,9 @@ $(function()
     $('#topic-end-time-input').datetimepicker({
         useCurrent : false,
         format : 'YYYY-MM-DD HH:mm:ss',
-        minDate : moment().add(10, 'minutes'),
-        defaultDate : '{{$topic->close_at}}'
+        minDate : moment().add(5, 'minutes'),
+        defaultDate : moment().add(10, 'minutes').isAfter('{{$topic->close_at}}') ?
+            moment().add(10, 'minutes') : '{{$topic->close_at}}'
     });
 
     // Handlers for edit topic name
@@ -493,12 +494,7 @@ $(function()
                 'opts' : opts
             });
         });
-        var data = {
-            'del' : del_list,
-            'alter' : alter_list,
-            'new' : new_list
-        }
-        console.log(data);
+        
         $.post('/topics/' + String({{$topic->id}}) + '/update',
         {
             '_token' : '{{ csrf_token() }}',

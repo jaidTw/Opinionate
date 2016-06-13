@@ -207,6 +207,7 @@ class TopicController extends Controller
                     foreach($request['alter'] as $task) {
                         if($new_qs_id != $task['id']) {
                             // If some qs is deleted, copy the remains to fill the empty
+                            /*
                             DB::insert('INSERT INTO question_sets(id, topic_id, name, type, is_multiple_choice, is_anonymous, result_visibility)
                                 SELECT ?, topic_id, name, type, is_multiple_choice, is_anonymous, result_visibility
                                 FROM question_sets WHERE id = ? AND topic_id = ?',
@@ -239,6 +240,14 @@ class TopicController extends Controller
                             ]);
                             DB::delete('DELETE FROM question_sets WHERE id = ? AND topic_id = ?',
                             [
+                                $task['id'],
+                                $id
+                            ]);
+                            */
+                            DB::update('UPDATE question_sets SET id = ?, result_visibility = ? WHERE id = ? AND topic_id = ?',
+                            [
+                                $new_qs_id,
+                                $task['result_visibility'],
                                 $task['id'],
                                 $id
                             ]);

@@ -21,7 +21,8 @@ class CreateBallotsTable extends Migration
             $table->primary(['user_id', 'topic_id', 'question_set_id', 'option_id']);
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign(Array('option_id', 'question_set_id', 'topic_id'))
-                ->references(Array('id', 'question_set_id', 'topic_id'))->on('options');
+                ->references(Array('id', 'question_set_id', 'topic_id'))->on('options')
+                ->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
