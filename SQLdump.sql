@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機: localhost
--- 產生時間： 2016 年 06 月 13 日 06:20
+-- 產生時間： 2016 年 06 月 13 日 17:47
 -- 伺服器版本: 10.1.11-MariaDB-log
 -- PHP 版本： 7.0.6
 
@@ -208,12 +208,12 @@ ALTER TABLE `comments`
 -- 使用資料表 AUTO_INCREMENT `topics`
 --
 ALTER TABLE `topics`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- 使用資料表 AUTO_INCREMENT `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- 已匯出資料表的限制(Constraint)
 --
@@ -222,7 +222,7 @@ ALTER TABLE `users`
 -- 資料表的 Constraints `ballots`
 --
 ALTER TABLE `ballots`
-  ADD CONSTRAINT `ballots_option_id_question_set_id_topic_id_foreign` FOREIGN KEY (`option_id`,`question_set_id`,`topic_id`) REFERENCES `options` (`id`, `question_set_id`, `topic_id`),
+  ADD CONSTRAINT `ballots_option_id_question_set_id_topic_id_foreign` FOREIGN KEY (`option_id`,`question_set_id`,`topic_id`) REFERENCES `options` (`id`, `question_set_id`, `topic_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `ballots_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
@@ -236,7 +236,7 @@ ALTER TABLE `comments`
 -- 資料表的 Constraints `options`
 --
 ALTER TABLE `options`
-  ADD CONSTRAINT `options_question_set_id_topic_id_foreign` FOREIGN KEY (`question_set_id`,`topic_id`) REFERENCES `question_sets` (`id`, `topic_id`);
+  ADD CONSTRAINT `options_question_set_id_topic_id_foreign` FOREIGN KEY (`question_set_id`,`topic_id`) REFERENCES `question_sets` (`id`, `topic_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- 資料表的 Constraints `question_sets`
