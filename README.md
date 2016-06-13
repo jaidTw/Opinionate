@@ -25,7 +25,6 @@ php artisan migrate
 ```
 
 # Todo
-* BUG : End Time default date and min date control
 * `showTopic.blade.php`
     * add `Chart.js`
 * `createTopic.blade.php`
