@@ -1,22 +1,22 @@
 # Opinionate
 
 # Deployment
-First, use laravel to create the new app.
+First, use laravel to create a new app.
 
 ```
 laravel new opinionate
 ```
 
-After creating the new app, remember to configure `.env` for database connection settings.
+After it, remember to configure `.env` for database connection settings.
 
 Then, set up the git repository to fetch.
-
 ```
 git init
 git remote add origin https://github.com/jaidTw/Opinionate.git
 git fetch --all
 git reset --hard origin/master
 ```
+Or you can just download the archive and replace the original files.
 
 Then do the database migration.
 
@@ -46,10 +46,12 @@ php artisan migrate
 * User dashboard
 * User page
     * All name link to user page.
-* Validation error message hadling.
+* More friendly validation error message.
 * Replace pure sql statements with Eloquent ORM after demo
 * I18N + Chinese L10N
 * Add disqus support
 
 # License
 The MIT License
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
