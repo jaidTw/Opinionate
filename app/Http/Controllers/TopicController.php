@@ -205,61 +205,14 @@ class TopicController extends Controller
                 $new_qs_id = 1;
                 if(isset($request['alter'])) {
                     foreach($request['alter'] as $task) {
-                        if($new_qs_id != $task['id']) {
-                            // If some qs is deleted, copy the remains to fill the empty
-                            /*
-                            DB::insert('INSERT INTO question_sets(id, topic_id, name, type, is_multiple_choice, is_anonymous, result_visibility)
-                                SELECT ?, topic_id, name, type, is_multiple_choice, is_anonymous, result_visibility
-                                FROM question_sets WHERE id = ? AND topic_id = ?',
-                            [
-                                $new_qs_id,
-                                $task['id'],
-                                $id
-                            ]);
-                            DB::insert('INSERT INTO options(id, question_set_id, topic_id, content)
-                                SELECT id, ?, topic_id, content
-                                FROM options WHERE question_set_id = ? AND topic_id = ?',
-                            [
-                                $new_qs_id,
-                                $task['id'],
-                                $id
-                            ]);
-                            // make the ballots reference the new one
-                            DB::update('UPDATE ballots SET question_set_id = ?
-                                WHERE topic_id = ? AND question_set_id = ?',
-                            [
-                                $new_qs_id,
-                                $id,
-                                $task['id']
-                            ]);
-                            // delete the original one
-                            DB::delete('DELETE FROM options WHERE question_set_id = ? AND topic_id = ?',
-                            [
-                                $task['id'],
-                                $id
-                            ]);
-                            DB::delete('DELETE FROM question_sets WHERE id = ? AND topic_id = ?',
-                            [
-                                $task['id'],
-                                $id
-                            ]);
-                            */
-                            DB::update('UPDATE question_sets SET id = ?, result_visibility = ? WHERE id = ? AND topic_id = ?',
-                            [
-                                $new_qs_id,
-                                $task['result_visibility'],
-                                $task['id'],
-                                $id
-                            ]);
-                        }
-                        else {
-                            DB::update('UPDATE question_sets SET result_visibility = ? WHERE id = ? AND topic_id = ?',
-                            [
-                                $task['result_visibility'],
-                                $task['id'],
-                                $id
-                            ]);
-                        }
+                        DB::update('UPDATE question_sets SET id = ?, result_visibility = ? WHERE id = ? AND topic_id = ?',
+                        [
+                            $new_qs_id,
+                            $task['result_visibility'],
+                            $task['id'],
+                            $id
+                        ]);
+                        
                         if(isset($task['opts'])) {
                             // GET CURRENT OPTION COUNT
                             $opt_idx = DB::select('SELECT count(*) AS aggregate FROM options 
