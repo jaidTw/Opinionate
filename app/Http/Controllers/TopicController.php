@@ -76,7 +76,7 @@ class TopicController extends Controller
 
             // Insert question sets
             for($qs_id = 1; $qs_id <= count($request['data']); ++$qs_id) {
-                $data = &$request['data'][$qs_id - 1];
+                $data = $request['data'][$qs_id - 1];
 
                 DB::insert('INSERT INTO question_sets(id, topic_id, name, type, is_multiple_choice, is_anonymous, result_visibility)
                             VALUES(?, ?, ?, ?, ?, ?, ?)',
