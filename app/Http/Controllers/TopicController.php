@@ -185,16 +185,7 @@ class TopicController extends Controller
                 DB::connection()->getPdo()->exec( 'LOCK TABLES question_sets WRITE, options WRITE, ballots WRITE' );
                 if(isset($request['del'])) {
                     foreach($request['del'] as $del_id) {
-                        DB::delete('DELETE FROM ballots WHERE question_set_id = ? AND topic_id = ?',
-                        [
-                            $del_id,
-                            $id
-                        ]);
-                        DB::delete('DELETE FROM options WHERE question_set_id = ? AND topic_id = ?',
-                        [
-                            $del_id,
-                            $id
-                        ]);
+                        // ballots and options will delete on cascade.
                         DB::delete('DELETE FROM question_sets WHERE id = ? AND topic_id = ?',
                         [
                             $del_id,
@@ -205,6 +196,7 @@ class TopicController extends Controller
                 $new_qs_id = 1;
                 if(isset($request['alter'])) {
                     foreach($request['alter'] as $task) {
+                        // ballots and options will update on cascade
                         DB::update('UPDATE question_sets SET id = ?, result_visibility = ? WHERE id = ? AND topic_id = ?',
                         [
                             $new_qs_id,
@@ -263,8 +255,6 @@ class TopicController extends Controller
             DB::connection()->getPdo()->exec( 'UNLOCK TABLES' );
             });
         }
-
-        $time = DB::select('SELECT updated_at FROM topics WHERE id = ?', [$id])[0]->updated_at;
     }
 
     /**
