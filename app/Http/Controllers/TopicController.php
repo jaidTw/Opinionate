@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 use App\Http\Requests;
 
@@ -23,7 +25,12 @@ class TopicController extends Controller
             'SELECT id, user_id, name, username, is_unlisted
                 FROM topics NATURAL JOIN
                 (SELECT id AS user_id, name AS username FROM users) AS users_inf');
-        return view('browseTopic', ['topics' => $topics]);
+        $per_page = 5;
+        $pagination = new LengthAwarePaginator($topics, count($topics), $per_page, Paginator::resolveCurrentPage(), ['path' => Paginator::resolveCurrentPath()]);
+        $page = $pagination->currentPage();
+        $topics = array_slice($topics, ($page-1)*$per_page, $per_page);
+
+        return view('browseTopic', ['topics' => $topics, 'pagination' => $pagination]);
     }
 
     /**
@@ -65,9 +72,9 @@ class TopicController extends Controller
             DB::insert('INSERT INTO topics(user_id, name, description, is_unlisted, close_at, created_at, updated_at)
                         VALUES(?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)',
             [
-                Auth::user()->id, 
-                $request['name'], 
-                $request['description'], 
+                Auth::user()->id,
+                $request['name'],
+                $request['description'],
                 $request['is_unlisted'],
                 $request['close_at']
             ]);
@@ -130,7 +137,7 @@ class TopicController extends Controller
             'options' => $options
         ]);
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -162,13 +169,13 @@ class TopicController extends Controller
             'new.*.result_visibility' => 'sometimes | required_if:type,qs | required | in:VISIBLE,INVISIBLE,VISIBLE_AFTER_ENDED',
             'new.*.opts.*' => 'sometimes | required_if:type,qs | required | string | max:255',
         ]);
-        
+
         $topic = DB::select('SELECT * FROM topics WHERE id = ?', [$id]);
 
         if(Gate::denies('update-topic', $topic[0])) {
             return redirect('/topics');
         }
-        
+
         if($request['type'] === 'name') {
             DB::update('UPDATE topics SET name = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', [$request['data'], $id]);
         }
@@ -204,10 +211,10 @@ class TopicController extends Controller
                             $task['id'],
                             $id
                         ]);
-                        
+
                         if(isset($task['opts'])) {
                             // GET CURRENT OPTION COUNT
-                            $opt_idx = DB::select('SELECT count(*) AS aggregate FROM options 
+                            $opt_idx = DB::select('SELECT count(*) AS aggregate FROM options
                                 WHERE topic_id = ? AND question_set_id = ?',
                             [
                                 $id,
