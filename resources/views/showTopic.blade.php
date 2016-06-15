@@ -34,7 +34,7 @@
         <div class="col-md-8">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3> Description 
+                    <h3> Description
                     @can('update-topic', $topic)
                         <button id="topic-des-edit" type="button" class="close">
                             <span class="glyphicon glyphicon-pencil"></span>
@@ -188,7 +188,7 @@
                             <button class="btn submit btn-primary">
                                 Confirm
                             </button>
-                            <button class="btn btn-default">
+                            <button class="btn btn-default" data-dismiss="modal">
                                 Cancel
                             </button>
                         </div>
@@ -393,7 +393,7 @@ $(function()
         $('#topic-end-time-input').data('DateTimePicker').minDate(moment().add(10, 'minutes'));
         $('#topic-end-time-input').removeClass('hidden');
         $('#topic-attr-update').removeClass('hidden');
-        
+
         $(this).attr('id', 'topic-attr-edit-cancel').blur();
 
     }).on('click', '#topic-attr-edit-cancel', function(e) {
@@ -401,7 +401,7 @@ $(function()
         $('#topic-unlist-input').addClass('hidden');
         $('#topic-end-time-input').addClass('hidden');
         $('#topic-attr-update').addClass('hidden');
-        
+
         $(this).attr('id', 'topic-attr-edit').blur();
 
     }).on('click', '#topic-attr-update', function(e) {
@@ -494,7 +494,7 @@ $(function()
                 'opts' : opts
             });
         });
-        
+
         $.post('/topics/' + String({{$topic->id}}) + '/update',
         {
             '_token' : '{{ csrf_token() }}',
@@ -589,7 +589,7 @@ function loadQuestionSets() {
 function loadQuestionSet(index) {
     $.get('/topics/' + String({{$topic->id}}) + '/' + String(index + 1), function(data) {
         var entry = $('.qs-entry:nth(' + String(index) + ')')
-        
+
         if(data['question_set']['is_multiple_choice']){
             entry.find('.option-template').addClass('multi');
         }
