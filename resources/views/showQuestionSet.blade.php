@@ -13,20 +13,20 @@
                 <div class="col-md-6">
                     <h4>
                     @if($question_sets[$qs_idx]->is_multiple_choice)
-                        <span class="label label-primary">Multiple choice</span>
+                        <span class="label label-primary">{{ trans('views.multiple_choice') }}</span>
                     @else
-                        <span class="label label-primary">Single choice</span>
+                        <span class="label label-primary">{{ trans('views.single_choice') }}</span>
                     @endif
                     @if($question_sets[$qs_idx]->is_anonymous)
-                        <span class="label label-warning">Anonymous</span>
+                        <span class="label label-warning">{{ trans('views.anonymous') }}</span>
                     @endif
                     </h4>
                 </div>
                 <div class="col-md-4 col-md-offset-2">
                     <select class="qs-vis form-control qs-edit-control hidden">
-                        <option value="VISIBLE">Visible</option>
-                        <option value="INVISIBLE">Invisible</option>
-                        <option value="VISIBLE_AFTER_ENDED">Visible after ended</option>
+                        <option value="VISIBLE">{{ trans('views.visible') }}</option>
+                        <option value="INVISIBLE">{{ trans('views.invisible') }}</option>
+                        <option value="VISIBLE_AFTER_ENDED">{{ trans('views.visible_after_end') }}</option>
                     </select>
                 </div>
             </div>
@@ -45,7 +45,7 @@
         </ul>
     @can('update-topic', $topic)
         <div class="panel-footer qs-edit-control hidden">
-            <label class="new-opt-show"><a><span class="glyphicon glyphicon-triangle-bottom"></span> Add more options...</a></label>
+            <label class="new-opt-show"><a><span class="glyphicon glyphicon-triangle-bottom"></span>{{ trans('views.add_more_opts') }}</a></label>
             <div class="opt-controls panel-collapse collapse" role="tabpanel" aria-expanded="false">
                 <div class="opt-entry col-md-6 input-group form-group">
                     <input class="new-qs-opt form-control" type="text" autocomplete="no" />

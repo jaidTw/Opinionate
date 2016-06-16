@@ -9,31 +9,31 @@
     </div>
 </div>
 <div class="container-fluid" style="background-color: #5bc0de;">
-    <h1 class="text-center">一句話</h1>
+    <h1 class="text-center">{{ trans('views.pitch') }}</h1>
 </div>
 <div class="container" style="margin-top: 20px;">
     <div class="row">
         <div class="col-md-4">
             <div class="panel panel-default">
-                <div class="panel-heading">功能一</div>
+                <div class="panel-heading">{{ trans('views.feature1') }}</div>
                 <div class="panel-body">
-                    ㄏ
+                    {{ trans('views.feature1_description') }}
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="panel panel-default">
-                <div class="panel-heading">功能二</div>
+                <div class="panel-heading">{{ trans('views.feature2') }}</div>
                 <div class="panel-body">
-                    ㄆ
+                    {{ trans('views.feature2_description') }}
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="panel panel-default">
-                <div class="panel-heading">功能三</div>
+                <div class="panel-heading">{{ trans('views.feature3') }}</div>
                 <div class="panel-body">
-                    ㄚ
+                    {{ trans('views.feature3_description') }}
                 </div>
             </div>
         </div>
@@ -42,19 +42,10 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    這是描述
+                    {{ trans('views.main_description') }}
                 </div>
             </div>
         </div>
     </div>
 </div>
-<footer class="footer" style="position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 60px;
-  background-color: #f5f5f5;">
-  <div class="container-fluid">
-    <p class="text-muted text-right">2016 年台師大數據庫期末項目</p>
-  </div>
-</footer>
 @endsection

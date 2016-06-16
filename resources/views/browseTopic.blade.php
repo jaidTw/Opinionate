@@ -8,18 +8,18 @@
             @if (Auth::check())
             <p>
                 <!-- Trigger Modal -->
-                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#CreateModal">Create Topic</button>
+                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#CreateModal">{{ trans('views.create_topic') }}</button>
             </p>
             @endif
 
             <div class="panel panel-default">
-                <div class="panel-heading">Topics</div>
+                <div class="panel-heading">{{ trans('views.topics') }}</div>
 
                 <table class="table table-hover">
                 <tr>
-                    <th> id </th>
-                    <th> Topic name </th>
-                    <th> Proposer </th>
+                    <th>{{ trans('views.id') }}</th>
+                    <th>{{ trans('views.topic_name') }}</th>
+                    <th>{{ trans('views.proposer') }}</th>
                 </tr>
                 @foreach($topics as $topic)
                     @if(!$topic->is_unlisted)
@@ -51,15 +51,15 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="myModalLabel">Create New Topic</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">{{ trans('views.close') }}</span></button>
+                <h4 class="modal-title" id="myModalLabel">{{ trans('views.create_new_topic') }}</h4>
             </div>
             <div class="modal-body">
                 <form class="form-horizontal" role="form" method="POST" action="{{ url('/topics/create') }}">
                     {{ csrf_field() }}
 
                     <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                        <label for="name" class="col-md-4 control-label">Topic Name</label>
+                        <label for="name" class="col-md-4 control-label">{{ trans('views.topic_name') }}</label>
                         <div class="col-md-6">
                             <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}">
                             @if ($errors->has('name'))
@@ -72,7 +72,7 @@
                     <div class="form-group">
                         <div class="col-md-6 col-md-offset-4">
                             <button type="submit" class="btn btn-primary">
-                                Next
+                                {{ trans('views.next') }}
                             </button>
                         </div>
                     </div>

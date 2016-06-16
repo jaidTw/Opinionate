@@ -1,5 +1,5 @@
 <div class="new-qs-entry-template panel panel-default hidden">
-    <div class="panel-heading"> 
+    <div class="panel-heading">
         <div class="row">
             <div class="col-md-4">
                 <input class="new-qs-name form-control" type="text" placeholder="Question Set Name"/>
@@ -10,20 +10,20 @@
                 </button>
             </div>
         </div>
-    </div>                    
+    </div>
     <div class="panel-body">
         <div class="row form-group">
             <div class="col-md-1">
-                <label class="control-label">Type</label>
+                <label class="control-label">{{ trans('views.type') }}</label>
             </div>
             <div class="col-md-3">
                 <select class="new-qs-type form-control">
-                    <option value="GENERAL">General</option>
-                    <option value="LOCATION">Location</option>
-                    <option value="TIME">Time</option>
-                    <option value="IMAGE">Image</option>
-                    <option value="AUDIO">Audio</option>
-                    <option value="VIDEO">Video</option>
+                    <option value="GENERAL">{{ trans('views.general') }}</option>
+                    <option value="LOCATION">{{ trans('views.location') }}</option>
+                    <option value="TIME">{{ trans('views.time') }}</option>
+                    <option value="IMAGE">{{ trans('views.image') }}</option>
+                    <option value="AUDIO">{{ trans('views.audio') }}</option>
+                    <option value="VIDEO">{{ trans('views.video') }}</option>
                 </select>
             </div>
         </div>
@@ -31,19 +31,19 @@
         <div class="new-qs-attrs">
             <div class="row form-group">
                 <div class="col-md-1">
-                    <label class="control-label">Attributes</label>
+                    <label class="control-label">{{ trans('views.attrs') }}</label>
                 </div>
                 <div class="col-md-11">
                     <div class="checkbox col-md-12">
                         <label>
                             <input class="new-qs-mult" type="checkbox" value=""/>
-                            Multiple Choice
+                            {{ trans('views.multiple_choice') }}
                         </label>
                     </div>
                     <div class="checkbox col-md-12">
                         <label>
                             <input class="new-qs-anonymous" type="checkbox" value=""/>
-                            Anonymous
+                            {{ trans('views.anonymous') }}
                         </label>
                     </div>
                 </div>
@@ -51,13 +51,13 @@
 
             <div class="row form-group">
                 <div class="col-md-1">
-                    <label class="control-label">Result Visbility</label>
+                    <label class="control-label">{{ trans('views.result_visibility') }}</label>
                 </div>
                 <div class="col-md-3">
                     <select class="new-qs-vis form-control">
-                        <option value="VISIBLE">Visible</option>
-                        <option value="INVISIBLE">Invisible</option>
-                        <option value="VISIBLE_AFTER_ENDED">Visible after ended</option>
+                        <option value="VISIBLE">{{ trans('views.visible') }}</option>
+                        <option value="INVISIBLE">{{ trans('views.invisible') }}</option>
+                        <option value="VISIBLE_AFTER_ENDED">{{ trans('views.visible_after_end') }}</option>
                     </select>
                 </div>
             </div>
@@ -65,7 +65,7 @@
 
         <div class="row form-group">
             <div class="col-md-1">
-                <label class="control-label">Options</label>
+                <label class="control-label">{{ trans('views.options') }}</label>
             </div>
 
             <div class="col-md-10 opt-controls">

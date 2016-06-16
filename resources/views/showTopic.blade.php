@@ -13,7 +13,7 @@
             </div>
             <div class="col-md-1">
                 <button id="topic-name-update" type="button" class="btn btn-success btn-lg topic-name-control hidden">
-                    Save
+                    {{ trans('views.save') }}
                 </button>
             </div>
             <div class="col-md-1">
@@ -23,7 +23,7 @@
             </div>
             <div class="col-md-1">
                 <button id="topic-delete" type="button" class="btn btn-danger btn-lg">
-                    Delete Topic
+                    {{ trans('views.delete_topic') }}
                 </button>
             </div>
         @endcan
@@ -34,7 +34,7 @@
         <div class="col-md-8">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3> Description
+                    <h3> {{ trans('views.description') }}
                     @can('update-topic', $topic)
                         <button id="topic-des-edit" type="button" class="close">
                             <span class="glyphicon glyphicon-pencil"></span>
@@ -50,7 +50,7 @@
                         <div class="col-md-1 col-md-offset-10">
                             <br/>
                             <button id="topic-des-update" type="button" class="btn btn-success hidden">
-                                Save
+                                {{ trans('views.save') }}
                             </button>
                         </div>
                     </div>
@@ -59,7 +59,7 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3> Question Sets
+                    <h3>{{ trans('views.qs') }}
                     @can('update-topic', $topic)
                         <button id="qs-edit" type="button" class="close">
                             <span class="glyphicon glyphicon-pencil"></span>
@@ -79,12 +79,12 @@
                     <div class="row">
                         <div class="col-md-1">
                             <button id="qs-add" class="btn btn-primary qs-edit-control hidden">
-                                Add Question Set
+                                {{ trans('views.add_qs') }}
                             </button>
                         </div>
                         <div class="col-md-1 col-md-offset-9">
                             <button id="qs-update" class="btn btn-success qs-edit-control hidden">
-                                Save
+                                {{ trans('views.save') }}
                             </button>
                         </div>
                     </div>
@@ -96,7 +96,7 @@
         <div class="col-md-4">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3> Topic Information
+                    <h3>{{ trans('views.topic_info') }}
                     @can('update-topic', $topic)
                         <button id="topic-attr-edit" type="button" class="close">
                             <span class="glyphicon glyphicon-pencil"></span>
@@ -105,10 +105,10 @@
                     </h3>
                 </div>
                 <div class="panel-body">
-                    <h3> Proposer </h3>
+                    <h3>{{ trans('views.proposer') }}</h3>
                     <p> {{ $proposer->name }} </p>
 
-                    <h3> Unlisted </h3>
+                    <h3>{{ trans('views.unlisted') }}</h3>
                     <p class="topic-attr"> {{ $topic->is_unlisted ? 'Yes' : 'No' }} </p>
                 @can('update-topic', $topic)
                     <select id="topic-unlist-input" class="form-control hidden">
@@ -117,7 +117,7 @@
                     </select>
                 @endcan
 
-                    <h3> End Time </h3>
+                    <h3>{{ trans('views.end_time') }}</h3>
                     <p class="topic-attr"> {{ $topic->close_at }} </p>
                 @can('update-topic', $topic)
                     <div class='input-group date hidden' id='topic-end-time-input'>
@@ -128,15 +128,15 @@
                     </div>
                 @endcan
 
-                    <h3> Created Time </h3>
+                    <h3>{{ trans('views.created_time') }}</h3>
                     <p> {{ $topic->created_at }} </p>
 
-                    <h3> Last Edit Time </h3>
+                    <h3> {{ trans('views.last_edit_time') }} </h3>
                     <p id="updated-at"> {{ $topic->updated_at }} </p>
                 @can('update-topic', $topic)
                     <div class="col-md-1 col-md-offset-9">
                         <button id="topic-attr-update" class="btn btn-success hidden">
-                            Save
+                            {{ trans('views.save') }}
                         </button>
                     </div>
                 @endcan
@@ -153,9 +153,9 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">
                     <span aria-hidden="true">&times;</span>
-                    <span class="sr-only">Close</span>
+                    <span class="sr-only">{{ trans('views.close') }}</span>
                 </button>
-                <h4 class="modal-title">Oops!</h4>
+                <h4 class="modal-title">{{ trans('views.oops') }}</h4>
             </div>
             <div class="modal-body">
             <p></p>
@@ -169,15 +169,14 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">
                     <span aria-hidden="true">&times;</span>
-                    <span class="sr-only">Close</span></button>
-                <h4 class="modal-title">Warning!</h4>
+                    <span class="sr-only">{{ trans('views.close') }}</span></button>
+                <h4 class="modal-title">{{ trans('views.warning') }}</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
                         <p>
-                            You are going to delete the topic. <br/>
-                            This will destroy all the things related (question sets, ballots, etc.)
+                            {{ trans('views.delete_warning_message') }}
                         </p>
                     </div>
                 </div>
@@ -186,10 +185,10 @@
                     <div class="row">
                         <div class="col-md-6 col-md-offset-4">
                             <button class="btn submit btn-primary">
-                                Confirm
+                                {{ trans('views.confirm') }}
                             </button>
                             <button class="btn btn-default" data-dismiss="modal">
-                                Cancel
+                                {{ trans('views.cancel') }}
                             </button>
                         </div>
                     </div>
@@ -205,8 +204,8 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">
                     <span aria-hidden="true">&times;</span>
-                    <span class="sr-only">Close</span></button>
-                <h4 class="modal-title">Ballots</h4>
+                    <span class="sr-only">{{ trans('views.close') }}</span></button>
+                <h4 class="modal-title">{{ trans('views.ballot') }}</h4>
             </div>
             <div class="modal-body">
                 <li class="list-group-item hidden"><a class="h4"></a></li>

@@ -7,12 +7,12 @@
             <h1> {{ $name }} </h1>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    Question Sets
+                    {{ trans('views.qs') }}
                 </div>
                 <div class="panel-body">
                     <div class="row form-group">
                         <div class="col-md-1">
-                            <label class="control-label">Description</label>
+                            <label class="control-label">{{ trans('views.description') }}</label>
                         </div>
                         <div class="col-md-8">
                             <textarea id="description" class="form-control" style="resize:none"></textarea>
@@ -21,7 +21,7 @@
 
                     <div class="row form-group">
                         <div class="col-md-1">
-                            <label class="control-label">End Time</label>
+                            <label class="control-label">{{ trans('views.end_time') }}</label>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
@@ -38,19 +38,19 @@
                     <div class="new-qs-attrs hidden">
                         <div class="row form-group">
                             <div class="col-md-1">
-                                <label class="control-label">Attributes</label>
+                                <label class="control-label">{{ trans('views.attr') }}</label>
                             </div>
                             <div class="col-md-11">
                                 <div class="checkbox col-md-12">
                                     <label>
                                         <input class="new-qs-mult" type="checkbox" value=""/>
-                                        Multiple Choice
+                                        {{ trans('views.multiple_choice') }}
                                     </label>
                                 </div>
                                 <div class="checkbox col-md-12">
                                     <label>
                                         <input class="new-qs-anonymous" type="checkbox" value=""/>
-                                        Anonymous
+                                        {{ trans('views.anonymous') }}
                                     </label>
                                 </div>
                             </div>
@@ -58,13 +58,13 @@
 
                         <div class="row form-group">
                             <div class="col-md-1">
-                                <label class="control-label">Result Visbility</label>
+                                <label class="control-label">{{ trans('views.result_visibility') }}</label>
                             </div>
                             <div class="col-md-3">
                                 <select class="new-qs-vis form-control">
-                                    <option>Visible</option>
-                                    <option>Invisible</option>
-                                    <option>Visible after ended</option>
+                                    <option>{{ trans('views.visible') }}</option>
+                                    <option>{{ trans('views.invisible') }}</option>
+                                    <option>{{ trans('views.visible_after_end') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -75,13 +75,13 @@
                         <div class="checkbox col-md-12">
                             <label>
                                 <input id="unlisted" type="checkbox" value=""/>
-                                Unlisted
+                                {{ trans('views.unlisted') }}
                             </label>
                         </div>
                         <div class="checkbox col-md-12">
                             <label>
                                 <input id="same-attr" type="checkbox" value=""/>
-                                Use same attribute for all question Sets.
+                                {{ trans('views.same_attr') }}
                             </label>
                         </div>
                     </div>
@@ -94,12 +94,12 @@
                     <div class="form-group">
                         <div class="col-md-1">
                             <button class="btn btn-primary qs-add">
-                                Add Question Set
+                                {{ trans('views.add_qs') }}
                             </button>
                         </div>
                         <div class="col-md-1 col-md-offset-4">
                             <button class="btn btn-success btn-submit">
-                                Create
+                                {{ trans('views.create') }}
                             </button>
                         </div>
                     </div>
@@ -198,7 +198,7 @@ $(function()
             else {
                 is_multiple_choice = $('.new-qs-entry:nth-child(' + String(i) + ') .new-qs-mult').is(':checked') ? 1 : 0;
                 is_anonymous = $('.new-qs-entry:nth-child(' + String(i) + ') .new-qs-anonymous').is(':checked') ? 1 : 0;
-                result_visibility = $('.new-qs-entry:nth-child(' + String(i) + ') .new-qs-vis').val();   
+                result_visibility = $('.new-qs-entry:nth-child(' + String(i) + ') .new-qs-vis').val();
             }
             var opts = [];
 
