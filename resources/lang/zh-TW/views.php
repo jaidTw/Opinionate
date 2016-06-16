@@ -13,7 +13,7 @@ return [
     'register' => '註冊',
     'name' => '名稱',
 
-    'home' => 'Home',
+    'home' => '首頁',
     'browse' => '瀏覽議題',
     'logout' => '登出',
     'create_topic' => '建立新議題',
