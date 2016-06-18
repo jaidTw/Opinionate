@@ -75,6 +75,6 @@ return [
     'feature2_description' => 'Feature Two Description',
     'feature3_description' => 'Feature Three Description',
     'main_description' => 'Main Description',
-    'footer_text' => '2016 NTNU DB Class Final Project',
+    'footer_text' => '2016 NTNU Database Course Final Project\n',
 
 ];

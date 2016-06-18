@@ -101,7 +101,13 @@
     <footer class="footer">
       <div class="container">
           <div class="navbar navbar-fixed-bottom" style="background-color: #f5f5f5;">
-              <p class="text-muted text-center">{{ trans('views.footer_text') }}</p>
+                <p class="text-muted text-center">{{ trans('views.footer_text') }}</p>
+                <p class="text-muted text-center">
+                    Design by
+                    <a href="https://github.com/jaidTw">@jaidTw </a>,
+                    <a href="https://github.com/jaidTw">@RexYuan </a>
+                    2016, Powered by <a href="https://laravel.com">Laravel</a>
+                </p>
           </div>
       </div>
     </footer>
