@@ -26,7 +26,7 @@
                     <th>{{ trans('views.topic_name') }}</th>
                 </tr>
                 @foreach($topics as $topic)
-                    @if(Auth::user()->id == $topic->id)
+                    @if(Auth::user()->id == $topic->user_id)
                     <tr>
                         <td> {{ $topic->id }} </td>
                         <td>
