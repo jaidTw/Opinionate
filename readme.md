@@ -1,7 +1,8 @@
 # Opinionate
+We are tired of those stringent options of voting systems today, so we decided to make our owns. Opinionate is a voting system site built on Laravel. It supports various option types, anonymity of users, time-sensitive or privacy-concerned topics.
 
 # Deployment
-First, use laravel to create a new app.
+First, use Laravel to create a new app.
 
 ```
 laravel new opinionate
