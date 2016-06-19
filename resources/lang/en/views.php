@@ -77,4 +77,6 @@ return [
     'main_description' => 'Main Description',
     'footer_text' => '2016 NTNU Database Course Final Project\n',
 
+    'register_time' => 'Registered at: ',
+
 ];

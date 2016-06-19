@@ -18,6 +18,7 @@ Route::any('/', function () {
 Route::auth();
 
 Route::any('/home', 'HomeController@index');
+Route::any('/home/{id}', 'HomeController@browse');
 Route::any('/topics', 'TopicController@index');
 
 Route::post('/topics/create', 'TopicController@create')->middleware('auth');

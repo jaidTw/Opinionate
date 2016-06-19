@@ -68,7 +68,7 @@
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ url('/home') }}">{{ trans('views.home') }}</a></li>
+                    <li><a href="{{ url('home/' . Auth::user()->id) }}">{{ trans('views.home') }}</a></li>
                 </ul>
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url('/topics') }}">{{ trans('views.browse') }}</a></li>

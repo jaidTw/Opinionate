@@ -31,9 +31,9 @@
                             </a>
                         </td>
                         <td>
-                            <!--<a href=' {{ url('users/' . $topic->user_id) }}'>-->
+                            <a href=' {{ url('home/' . $topic->user_id) }}'>
                                 {{ $topic->username }}
-                            <!--</a>-->
+                            </a>
                         </td>
                     </tr>
                     @endif

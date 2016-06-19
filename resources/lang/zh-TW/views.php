@@ -77,4 +77,6 @@ return [
     'main_description' => 'Main Description',
     'footer_text' => '2016 年台師大資料庫理論期末專題',
 
+    'register_time' => '註冊時間：',
+
 ];
