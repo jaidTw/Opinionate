@@ -106,7 +106,7 @@
                 </div>
                 <div class="panel-body">
                     <h3>{{ trans('views.proposer') }}</h3>
-                    <p> {{ $proposer->name }} </p>
+                    <p> <a href="{{ url('home/' . $proposer->id) }}">{{ $proposer->name }}</a> </p>
 
                     <h3>{{ trans('views.unlisted') }}</h3>
                     <p class="topic-attr"> {{ $topic->is_unlisted ? 'Yes' : 'No' }} </p>
@@ -565,7 +565,7 @@ $(function()
                         .removeClass('hidden')
                         .appendTo(template.siblings('.list-group'))
                         .find('a')
-                        .html(data[idx]['name']);
+                        .html('<a href="/home/'+data[idx]['id']+'">'+data[idx]['name']+'</a>');
             }
         }).error(function(data) {
             // TODO : add more complicated error message here.

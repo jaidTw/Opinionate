@@ -117,7 +117,7 @@ class TopicController extends Controller
     public function show($id)
     {
         $topic = DB::select('SELECT * FROM topics WHERE id = ?', [$id]);
-        $proposer = DB::select('SELECT name FROM users WHERE id = ?', [$topic[0]->user_id]);
+        $proposer = DB::select('SELECT id, name FROM users WHERE id = ?', [$topic[0]->user_id]);
         $question_sets = DB::select('SELECT id, name, type, is_multiple_choice, is_anonymous, result_visibility
             FROM question_sets WHERE topic_id = ?', [$id]);
 
