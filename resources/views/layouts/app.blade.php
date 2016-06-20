@@ -67,9 +67,11 @@
 
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
+                @if(Auth::check())
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url('home/' . Auth::user()->id) }}">{{ trans('views.home') }}</a></li>
                 </ul>
+                @endif
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url('/topics') }}">{{ trans('views.browse') }}</a></li>
                 </ul>
