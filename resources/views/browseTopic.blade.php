@@ -11,16 +11,7 @@
                 <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#CreateModal">{{ trans('views.create_topic') }}</button>
             </p>
             @endif
-
-            <ul class="nav navbar-nav navbar-right">
-                <form class="form-inline">
-                    <div class="form-group" role="form" method="GET" action="http://www.google.com">
-                        <label class="sr-only" for="term">搜尋</label>
-                        <input class="form-control" name="term" id="term" placeholder="搜尋">
-                    </div>
-                </form>
-            </ul>
-
+            
             <div class="panel panel-default">
                 <div class="panel-heading">{{ trans('views.topics') }}</div>
 
