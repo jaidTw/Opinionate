@@ -97,7 +97,7 @@
                     @endif
                 </ul>
 
-                <ul class="nav navbar-nav navbar-right">
+                <ul class="nav navbar-nav navbar-right" style="margin-top: 10px;">
                     <form class="form-inline">
                         <div class="form-group" role="form" method="GET" action="{{ url('/topics/search') }}">
                             <label class="sr-only" for="term">搜尋</label>
