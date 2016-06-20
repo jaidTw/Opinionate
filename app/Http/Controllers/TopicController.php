@@ -19,12 +19,22 @@ class TopicController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $topics = DB::select(
-            'SELECT id, user_id, name, username, is_unlisted
-                FROM topics NATURAL JOIN
-                (SELECT id AS user_id, name AS username FROM users) AS users_inf');
+        if ($request->has('term')) {
+            $term = $request->input('term');
+            $topics = DB::select(
+                'SELECT id, user_id, name, username, is_unlisted
+                    FROM topics NATURAL JOIN
+                    (SELECT id AS user_id, name AS username FROM users) AS users_inf
+                    WHERE name LIKE ?', ['%'.$term.'%']);
+        }
+        else {
+            $topics = DB::select(
+                'SELECT id, user_id, name, username, is_unlisted
+                    FROM topics NATURAL JOIN
+                    (SELECT id AS user_id, name AS username FROM users) AS users_inf');
+        }
         $per_page = 5;
         $pagination = new LengthAwarePaginator($topics, count($topics), $per_page, Paginator::resolveCurrentPage(), ['path' => Paginator::resolveCurrentPath()]);
         $page = $pagination->currentPage();
