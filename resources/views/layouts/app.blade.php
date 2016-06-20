@@ -96,15 +96,6 @@
                         </li>
                     @endif
                 </ul>
-
-                <ul class="nav navbar-nav navbar-right" style="margin-top: 10px;">
-                    <form class="form-inline">
-                        <div class="form-group" role="form" method="GET" action="{{ url('/topics/search') }}">
-                            <label class="sr-only" for="term">搜尋</label>
-                            <input class="form-control" name="term" id="term" placeholder="搜尋">
-                        </div>
-                    </form>
-                </ul>
             </div>
         </div>
     </nav>
