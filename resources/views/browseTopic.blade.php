@@ -5,34 +5,25 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
 
-            @if (Auth::check())
             <p>
                 <!-- Trigger Modal -->
+                @if (Auth::check())
                 <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#CreateModal">{{ trans('views.create_topic') }}</button>
+                @endif
+                <input class="form-control" id="search_topic" placeholder="搜尋">
             </p>
-            @endif
-
-            <ul class="nav navbar-nav navbar-right">
-                <form class="form-inline">
-                    <div class="form-group" role="form" method="GET" action="http://www.google.com">
-                        <label class="sr-only" for="term">搜尋</label>
-                        <input class="form-control" name="term" id="term" placeholder="搜尋">
-                    </div>
-                </form>
-            </ul>
 
             <div class="panel panel-default">
                 <div class="panel-heading">{{ trans('views.topics') }}</div>
 
-                <table class="table table-hover">
+                <table class="table table-hover" id="browse_table">
                 <tr>
                     <th>{{ trans('views.id') }}</th>
                     <th>{{ trans('views.topic_name') }}</th>
                     <th>{{ trans('views.proposer') }}</th>
                 </tr>
                 @foreach($topics as $topic)
-                    @if(!$topic->is_unlisted)
-                    <tr>
+                    <tr class="topic_listing">
                         <td> {{ $topic->id }} </td>
                         <td>
                             <a href=' {{ url('topics/' . $topic->id) }}'>
@@ -45,8 +36,15 @@
                             </a>
                         </td>
                     </tr>
-                    @endif
                 @endforeach
+                </table>
+
+                <table class="table table-hover hidden" id="search_table">
+                <tr>
+                    <th>{{ trans('views.id') }}</th>
+                    <th>{{ trans('views.topic_name') }}</th>
+                    <th>{{ trans('views.proposer') }}</th>
+                </tr>
                 </table>
             </div>
         </div>
@@ -92,12 +90,47 @@
 </div>
 
 @section('scripts')
-@if ($errors->has('name'))
+
 <script>
 $(function()
 {
+@if ($errors->has('name'))
     $('#CreateModal').modal('show');
+@endif
+    $(document).on('input', '#search_topic', function() {
+        if ($(this).val() == '')
+        {
+            $('#search_table').addClass('hidden');
+            $('#browse_table').removeClass('hidden');
+        }
+        else
+        {
+            $.get("/topics/search", {term: $(this).val()})
+            .done(function(data) {
+                $('#browse_table').addClass('hidden');
+                $('.search_listing').remove();
+
+                result_topics = $.parseJSON(data);
+                $.each(result_topics, function(k, v) {
+                    $('#search_table').append(
+                        '<tr class="search_listing"><td>' +
+                        v['id'] +
+                        '</td><td><a href=\'/topics/' +
+                        v['id'] +
+                        '\'>' +
+                        v['name'] +
+                        '</a></td><td><a href=\'/home/' +
+                        v['user_id'] +
+                        '\'>' +
+                        v['username'] +
+                        '</a></td></tr>'
+                    );
+                });
+
+                $('#search_table').removeClass('hidden')
+            });
+        }
+    });
 });
 </script>
-@endif
 @endsection
