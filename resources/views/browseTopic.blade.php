@@ -49,7 +49,9 @@
             </div>
         </div>
     </div>
-    {{ $pagination }}
+    <div class="text-center" id="pagination">
+        {{ $pagination }}
+    </div>
 </div>
 @endsection
 
@@ -97,17 +99,19 @@ $(function()
 @if ($errors->has('name'))
     $('#CreateModal').modal('show');
 @endif
-    $(document).on('input', '#search_topic', function() {
+    $(document).on('input focus blur', '#search_topic', function() {
         if ($(this).val() == '')
         {
             $('#search_table').addClass('hidden');
             $('#browse_table').removeClass('hidden');
+            $('#pagination').removeClass('hidden');
         }
         else
         {
+            $('#browse_table').addClass('hidden');
+            $('#pagination').addClass('hidden');
             $.get("/topics/search", {term: $(this).val()})
             .done(function(data) {
-                $('#browse_table').addClass('hidden');
                 $('.search_listing').remove();
 
                 result_topics = $.parseJSON(data);
