@@ -5,14 +5,14 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
 
-            @if (Auth::check())
+        @if (Auth::check())
             <div class="row form-group">
                 <!-- Trigger Modal -->
                 <div class="col-md-1">
                     <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#CreateModal">{{ trans('views.create_topic') }}</button>
                 </div>
             </div>
-            @endif
+        @endif
 
             <div class="row form-group">
                 <div class="col-md-10">

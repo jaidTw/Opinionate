@@ -235,7 +235,6 @@ class TopicController extends Controller
                                 $id,
                                 $new_qs_id,
                             ])[0]->aggregate;
-                            print_r($opt_idx);
                             foreach($task['opts'] as $content) {
                                 $opt_idx += 1;
                                 DB::insert('INSERT INTO options(id, question_set_id, topic_id, content)

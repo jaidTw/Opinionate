@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-12">
-            <h1>{{ Auth::user()->name }}</h1>
+            <h1>{{ $user->name }}</h1>
         </div>
     </div>
 
@@ -12,7 +12,7 @@
         <div class="col-xs-12 col-md-4">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    {{ trans('views.register_time') }}{{ Auth::user()->created_at }}
+                    {{ trans('views.register_time') }}{{ $user->created_at }}
                 </div>
             </div>
         </div>
@@ -26,7 +26,6 @@
                     <th>{{ trans('views.topic_name') }}</th>
                 </tr>
                 @foreach($topics as $topic)
-                    @if(Auth::user()->id == $topic->user_id)
                     <tr>
                         <td> {{ $topic->id }} </td>
                         <td>
@@ -35,16 +34,6 @@
                             </a>
                         </td>
                     </tr>
-                    @elseif(!$topic->is_unlisted)
-                    <tr>
-                        <td> {{ $topic->id }} </td>
-                        <td>
-                            <a href=' {{ url('topics/' . $topic->id) }}'>
-                                {{ $topic->name }}
-                            </a>
-                        </td>
-                    </tr>
-                    @endif
                 @endforeach
                 </table>
             </div>
