@@ -21,31 +21,21 @@ class TopicController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->has('term')) {
-            $term = $request->input('term');
-            $topics = DB::select(
-                'SELECT id, user_id, name, username, is_unlisted
-                    FROM topics NATURAL JOIN
-                    (SELECT id AS user_id, name AS username FROM users) AS users_inf
-                    WHERE name LIKE ?', ['%'.$term.'%']);
-        }
-        else {
-            $topics = DB::select(
-                'SELECT id, user_id, name, username
-                    FROM topics NATURAL JOIN
-                    (SELECT id AS user_id, name AS username FROM users) AS users_inf WHERE is_unlisted = FALSE');
-        }
+        $topics = DB::select(
+            'SELECT id, user_id, name, username
+                FROM topics NATURAL JOIN
+                (SELECT id AS user_id, name AS username FROM users) AS users_inf WHERE is_unlisted = FALSE');
         $per_page = 5;
         $pagination = new LengthAwarePaginator($topics, count($topics), $per_page, Paginator::resolveCurrentPage(), ['path' => Paginator::resolveCurrentPath()]);
         $page = $pagination->currentPage();
-        $topics = array_slice($topics, ($page-1)*$per_page, $per_page);
+        $topics = array_slice($topics, ($page - 1) * $per_page, $per_page);
 
         return view('browseTopic', ['topics' => $topics, 'pagination' => $pagination]);
     }
 
     public function search(Request $request)
     {
-        if ($request->has('term'))
+        if($request->has('term'))
         {
             $term = $request->input('term');
             $topics = DB::select(
@@ -53,6 +43,7 @@ class TopicController extends Controller
                     FROM topics NATURAL JOIN
                     (SELECT id AS user_id, name AS username FROM users) AS users_inf
                     WHERE name LIKE ?', ['%'.$term.'%']);
+
             return json_encode($topics);
         }
     }

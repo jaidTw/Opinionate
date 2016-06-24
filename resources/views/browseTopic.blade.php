@@ -5,13 +5,20 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
 
-            <p>
+            @if (Auth::check())
+            <div class="row form-group">
                 <!-- Trigger Modal -->
-                @if (Auth::check())
-                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#CreateModal">{{ trans('views.create_topic') }}</button>
-                @endif
-                <input class="form-control" id="search_topic" placeholder="搜尋">
-            </p>
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#CreateModal">{{ trans('views.create_topic') }}</button>
+                </div>
+            </div>
+            @endif
+
+            <div class="row form-group">
+                <div class="col-md-10">
+                    <input class="form-control" id="search_topic" placeholder="搜尋">
+                </div>
+            </div>
 
             <div class="panel panel-default">
                 <div class="panel-heading">{{ trans('views.topics') }}</div>
@@ -110,7 +117,10 @@ $(function()
         {
             $('#browse_table').addClass('hidden');
             $('#pagination').addClass('hidden');
-            $.get("/topics/search", {term: $(this).val()})
+            $.post("/topics/search", {
+                '_token' : '{{ csrf_token() }}',
+                'term' : $(this).val()
+            })
             .done(function(data) {
                 $('.search_listing').remove();
 
