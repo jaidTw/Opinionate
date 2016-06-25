@@ -28,29 +28,23 @@ php artisan migrate
 # Todo
 * `showTopic.blade.php`
     * add `Chart.js`
-    * implement Visible after ended.
 * `createTopic.blade.php`
     * question sets and options number constraint.
         * trigger error by the number of DOM elements.
     * rewrite post with jQuery iterator
-* `browseTopic.blade.php`
-    * use laravel paginator
 * `TopicController@store`
     * add `close_at` validation
     * qs and opt number validation
     * may perform question set number checking
 * `TopicController@update`
-    * add `close_at` validation
     * qs and opt number validation
     * may perform question set number checking
-* Landing Page
+* Improve Landing Page
 * User dashboard
 * User page
-    * All name link to user page.
 * More friendly validation error message.
 * Replace pure sql statements with Eloquent ORM after demo
-* I18N + Chinese L10N
-* Add disqus support
+* Improve i18n + zh-tw l10n
 
 # License
 The MIT License

@@ -21,6 +21,10 @@
                     <span class="glyphicon glyphicon-pencil"> </span>
                 </button>
             </div>
+        @else
+            <div class="col-md-2"></div>
+        @endcan
+        @can('delete-topic', $topic)
             <div class="col-md-1">
                 <button id="topic-delete" type="button" class="btn btn-danger btn-lg">
                     {{ trans('views.delete_topic') }}
@@ -225,8 +229,10 @@ $(function()
 {
     loadQuestionSets();
 
-// If user is logged in, register voting handlers
-@if (Auth::check())
+@if(Auth::check())
+// If user is logged in
+    @can('vote', $topic)
+    // And ended time is not pass.
     $(document).on('click', '.option', vote_action);
 
     function vote_action(e) {
@@ -235,7 +241,7 @@ $(function()
         var qs_id = $(this).parents('.qs-entry').index() + 1;
         var opt_id = $('.qs-entry:nth(' + String(qs_id - 1) + ') .option').index($(this)) + 1;
 
-        if($(this).hasClass('multi')) {
+        if($(this).hasClass('multi')) { 
             if($(this).hasClass('list-group-item-info')) {
                 //destroy
                 $.post('/topics/' + String({{$topic->id}}) + '/ballot/destroy',
@@ -304,6 +310,7 @@ $(function()
             }
         }
     }
+    @endcan
 // If is not logged in, trigger the hint.
 @else
     $(document).on('click', '.option', function(e) {
@@ -629,8 +636,10 @@ function loadQuestionSet(index) {
         }
     @endif
         // Set badge
-        for(var ballot_count_idx = 0; ballot_count_idx < data['all_ballots'].length; ++ballot_count_idx) {
-            entry.find('.badge:nth(' + String(data['all_ballots'][ballot_count_idx]['option_id']) + ')').html(data['all_ballots'][ballot_count_idx]['count']);
+        if(typeof data['all_ballots'] != 'undefined') {
+            for(var ballot_count_idx = 0; ballot_count_idx < data['all_ballots'].length; ++ballot_count_idx) {
+                entry.find('.badge:nth(' + String(data['all_ballots'][ballot_count_idx]['option_id']) + ')').html(data['all_ballots'][ballot_count_idx]['count']);
+            }
         }
     }).error(function(data) {
         // TODO : add more complicated error message here.

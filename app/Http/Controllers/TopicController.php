@@ -182,7 +182,7 @@ class TopicController extends Controller
             'new.*.is_multiple_choice' => 'sometimes | required_if:type,qs | required | boolean',
             'new.*.is_anonymous' => 'sometimes | required_if:type,qs | required | boolean',
             'new.*.result_visibility' => 'sometimes | required_if:type,qs | required | in:VISIBLE,INVISIBLE,VISIBLE_AFTER_ENDED',
-            'new.*.opts.*' => 'sometimes | required_if:type,qs | required | string | max:255',
+            'new.*.opts.*' => 'sometimes | required_if:type,qs | required | string | max:255'
         ]);
 
         $topic = DB::select('SELECT * FROM topics WHERE id = ?', [$id]);

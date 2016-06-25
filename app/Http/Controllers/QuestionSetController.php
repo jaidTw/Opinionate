@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 use App\Http\Requests;
+use Carbon\Carbon;
 
 class QuestionSetController extends Controller
 {
@@ -58,9 +59,11 @@ class QuestionSetController extends Controller
             $response['user_ballot'] = $user_ballot;
         }
 
-        $topic = DB::select('SELECT user_id FROM topics WHERE id = ?', [$id])[0];
+        $topic = DB::select('SELECT user_id, close_at FROM topics WHERE id = ?', [$id])[0];
 
-        if($question_set->result_visibility === "VISIBLE" || Gate::allows('update-topic', $topic)) {
+        if(Gate::allows('update-topic', $topic)
+           || $question_set->result_visibility === "VISIBLE"
+           || ($question_set->result_visibility === "VISIBLE_AFTER_ENDED") && Carbon::now() < Carbon::parse($topic->close_at)) {
 
             $all_ballots = DB::select('SELECT COUNT(*) AS count, option_id
                 FROM ballots WHERE topic_id = ? AND question_set_id = ? GROUP BY option_id', [$id, $qsid]

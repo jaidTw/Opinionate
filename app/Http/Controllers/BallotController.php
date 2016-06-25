@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\DB;
 
 use App\Http\Requests;
@@ -41,6 +42,11 @@ class BallotController extends Controller
      */
     public function store(Request $request, $id)
     {
+        $topic = DB::select('SELECT close_at FROM topics WHERE id = ?', [$id])[0];
+        if(Gate::denies('vote', $topic)) {
+            return;
+        }
+
         DB::transaction(function() use(&$request, $id) {
 
             DB::insert('INSERT INTO ballots(user_id, topic_id, question_set_id, option_id, cast_at)
@@ -63,6 +69,11 @@ class BallotController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $topic = DB::select('SELECT close_at FROM topics WHERE id = ?', [$id])[0];
+        if(Gate::denies('vote', $topic)) {
+            return;
+        }
+
         DB::transaction(function() use(&$request, $id) {
             // TODO : Add end time checking
             // TODO : need to perform id existence checking
@@ -106,6 +117,11 @@ class BallotController extends Controller
      */
     public function destroy(Request $request, $id)
     {
+        $topic = DB::select('SELECT close_at FROM topics WHERE id = ?', [$id])[0];
+        if(Gate::denies('vote', $topic)) {
+            return;
+        }
+        
         DB::transaction(function() use(&$request, $id) {
             // TODO : Add end time checking
 

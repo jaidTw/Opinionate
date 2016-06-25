@@ -19,7 +19,9 @@
 
         <div class="col-xs-12 col-md-8">
             <div class="panel panel-default">
-                <div class="panel-heading">{{ trans('views.topics') }}</div>
+                <div class="panel-heading">
+                    {{ trans('views.topics') }}
+                </div>
                 <table class="table table-hover">
                 <tr>
                     <th>{{ trans('views.id') }}</th>

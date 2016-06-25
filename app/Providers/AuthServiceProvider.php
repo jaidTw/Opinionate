@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Carbon\Carbon;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -27,8 +28,16 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies($gate);
 
         
-        $gate->define('update-topic', function ($user, $topic) {
+        $gate->define('delete-topic', function ($user, $topic) {
             return $user->id === $topic->user_id;
+        });
+        
+        $gate->define('update-topic', function ($user, $topic) {
+            return $user->id === $topic->user_id && Carbon::now() < Carbon::parse($topic->close_at);
+        });
+
+        $gate->define('vote', function ($user, $topic) {
+            return Carbon::now() < Carbon::parse($topic->close_at);
         });
     }
 }
