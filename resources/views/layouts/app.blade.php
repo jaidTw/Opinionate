@@ -47,7 +47,7 @@
     <meta name="theme-color" content="#ffffff">
 </head>
 <body id="app-layout" style="padding-bottom: 70px;">
-    <nav class="navbar navbar-default navbar-static-top">
+    <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
 
@@ -98,6 +98,9 @@
             </div>
         </div>
     </nav>
+    <br/>
+    <br/>
+    <br/>
 
     @yield('content')
 
@@ -120,6 +123,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"> </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"> </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.min.js"> </script>
     {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}
 
     @yield('scripts')

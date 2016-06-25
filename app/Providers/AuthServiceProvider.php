@@ -33,7 +33,7 @@ class AuthServiceProvider extends ServiceProvider
         });
         
         $gate->define('update-topic', function ($user, $topic) {
-            return $user->id === $topic->user_id && Carbon::now() < Carbon::parse($topic->close_at);
+            return $user->id === $topic->user_id && Carbon::now('Asia/Taipei') < (Carbon::parse($topic->close_at, 'Asia/Taipei'));
         });
 
         $gate->define('vote', function ($user, $topic) {

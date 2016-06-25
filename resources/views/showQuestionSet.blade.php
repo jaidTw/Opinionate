@@ -58,5 +58,27 @@
             </div>
         </div>
     @endcan
+        <div class="panel-footer view-chart hidden">
+            <label class="chart-show"><a><span class="glyphicon glyphicon-triangle-bottom"></span>{{ trans('views.view_chart') }}</a></label>
+            <div class="chart-controls panel-collapse collapse" role="tabpanel" aria-expanded="false">
+                <div class="chart-type">
+                    <div class="radio row">
+                        <div class="col-md-3">
+                            <label class="chart-type-opt"><input name="chart-type-{{$qs_idx}}" type="radio" value="bar" checked>{{trans('views.bar_chart')}}</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="chart-type-opt"><input name="chart-type-{{$qs_idx}}" type="radio" value="polarArea">{{trans('views.polar_chart')}}</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="chart-type-opt"><input name="chart-type-{{$qs_idx}}" type="radio" value="pie">{{trans('views.pie_chart')}}</label>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="chart-type-opt"><input name="chart-type-{{$qs_idx}}" type="radio" value="doughnut">{{trans('views.doughnut_chart')}}</label>
+                        </div>
+                    </div>
+                </div>
+                <canvas class="qs-chart" width="400" height="200"></canvas>
+            </div>
+        </div>
     </div>
 @endfor

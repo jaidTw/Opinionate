@@ -25,6 +25,8 @@ return [
     'create_new_topic' => '建立新議題',
     'topic_name' => '議題名稱',
     'next' => '下一步',
+    'yes' => '是',
+    'no' => '否',
 
     'qs' => '題組',
     'description' => '說明',
@@ -40,6 +42,11 @@ return [
     'same_attr' => '為所有題組使用相同屬性',
     'add_qs' => '新增題組',
     'create' => '建立',
+    'view_chart' => '檢視圖表',
+    'bar_chart' => '長條圖',
+    'polar_chart' => '極區圖',
+    'pie_chart' => '圓餅圖',
+    'doughnut_chart' => '環圈圖',
 
     'dashboard' => '控制面板',
     'logged_in_message' => '您已登入！',

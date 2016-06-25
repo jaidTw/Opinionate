@@ -25,6 +25,8 @@ return [
     'create_new_topic' => 'Create New Topic',
     'topic_name' => 'Topic Name',
     'next' => 'Next',
+    'yes' => 'yes',
+    'no' => 'no',
 
     'qs' => 'Question Sets',
     'description' => 'Description',
@@ -40,6 +42,11 @@ return [
     'same_attr' => 'Use same attribute for all question Sets.',
     'add_qs' => 'Add Question Set',
     'create' => 'Create',
+    'view_chart' => 'View Chart',
+    'bar_chart' => 'Bar Chart',
+    'polar_chart' => 'Polar Area Chart',
+    'pie_chart' => 'Pie Chart',
+    'doughnut_chart' => 'Doughnut Chart',
 
     'dashboard' => 'Dashboard',
     'logged_in_message' => 'You are logged in!',

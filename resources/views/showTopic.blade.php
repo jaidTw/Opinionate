@@ -113,11 +113,11 @@
                     <p> <a href="{{ url('home/' . $proposer->id) }}">{{ $proposer->name }}</a> </p>
 
                     <h3>{{ trans('views.unlisted') }}</h3>
-                    <p class="topic-attr"> {{ $topic->is_unlisted ? 'Yes' : 'No' }} </p>
+                    <p class="topic-attr"> {{ $topic->is_unlisted ? trans('views.yes') : trans('views.no') }} </p>
                 @can('update-topic', $topic)
                     <select id="topic-unlist-input" class="form-control hidden">
-                        <option value="0">No</option>
-                        <option value="1">Yes</option>
+                        <option value="0">{{ trans('views.no') }}</option>
+                        <option value="1">{{ trans('views.yes') }}</option>
                     </select>
                 @endcan
 
@@ -430,6 +430,7 @@ $(function()
 
     // Handlers for edit question set
     $(document).on('click', '#qs-edit', function(e) {
+        $('.view-chart').addClass('hidden');
         $('.qs-edit-control').removeClass('hidden');
         $(document).off('click', '.option');
 
@@ -438,6 +439,7 @@ $(function()
     }).on('click', '#qs-edit-cancel', function(e) {
         $('.new-qs-entry').remove();
         $('.qs-edit-control').addClass('hidden');
+        $('.view-chart').removeClass('hidden');
         $('.qs-entry-toDel').css('opacity', '1').removeClass('qs-entry-toDel');
         $(document).on('click', '.option', vote_action);
 
@@ -552,6 +554,95 @@ $(function()
         $('#delete-modal').modal('show');
     });
 @endcan
+// handlers for charts
+    $(document).on('click', '.chart-show', function(e) {
+        $(this).find('.glyphicon').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-top');
+        $(this).removeClass('chart-show').addClass('chart-hide');
+        $(this).siblings('.panel-collapse').collapse('show');
+        var type = $(this).siblings('.chart-controls').find('input:checked').val()
+        var ctx = $(this).siblings('.chart-controls').find('.qs-chart');
+        var chart_data = ctx.data('chart');
+        var options = {}
+        if(type == 'bar') {
+            options = {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            stepSize: 1,
+                        }
+                    }]
+                }
+            }
+        }
+        var chart = new Chart(ctx, {
+            type: type,
+            data: {
+                labels: chart_data.options,
+                datasets: [{
+                    data: chart_data.counts,
+                    label: '# of votes',
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ]
+                }]
+            },
+            options: options
+        });
+        ctx.data('chart-object', chart);
+
+    }).on('click', '.chart-hide', function(e) {
+        $(this).find('.glyphicon').removeClass('glyphicon-triangle-top').addClass('glyphicon-triangle-bottom');
+        $(this).removeClass('chart-hide').addClass('chart-show')
+        $(this).siblings('.panel-collapse').collapse('hide');
+
+    }).on('click', ".chart-type-opt input[type='radio']", function(e) {
+        var ctx = $(this).parents('.chart-type').siblings('.qs-chart')
+        var chart = ctx.data('chart-object');
+        var chart_data = ctx.data('chart');
+        var options = {}
+        var type = $(this).val()
+        if(type == 'bar') {
+            options.scales = {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 1,
+                    }
+                }]
+            }
+        }
+        chart.destroy();
+        chart = new Chart(ctx, {
+            type: type,
+            label: '# of votes',
+            data: {
+                labels: chart_data.options,
+                datasets: [{
+                    data: chart_data.counts,
+                    label: '# of votes',
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ]
+                }]
+            },
+            options: options
+        });
+        chart.update();
+        ctx.data('chart-object', chart);
+    });
+
+
 // register handlers for ballot querying and question sets loading.
     $(document).on('click', '.not-anonymous', function(e) {
         e.stopPropagation();
@@ -615,6 +706,7 @@ function loadQuestionSet(index) {
         if(!data['question_set']['is_anonymous']){
             entry.find('.option-template .badge').addClass('not-anonymous');
         }
+
         entry.find('.qs-vis').val(data['question_set']['result_visibility']);
 
         entry.find('.option').remove();
@@ -640,6 +732,24 @@ function loadQuestionSet(index) {
             for(var ballot_count_idx = 0; ballot_count_idx < data['all_ballots'].length; ++ballot_count_idx) {
                 entry.find('.badge:nth(' + String(data['all_ballots'][ballot_count_idx]['option_id']) + ')').html(data['all_ballots'][ballot_count_idx]['count']);
             }
+
+            entry.find('.view-chart').removeClass('hidden');
+
+            var options = []
+            for(var idx = 0; idx < data['options'].length; ++idx) {
+                options.push(data['options'][idx]['content']);
+            }
+            var counts = new Array(options.length)
+            counts.fill(0)
+            for(var idx = 0; idx < data['all_ballots'].length; ++idx) {
+                counts[data['all_ballots'][idx]['option_id'] - 1] = data['all_ballots'][idx]['count'];
+            }
+
+            entry.find('.qs-chart').data('chart', {
+                name : data['question_set']['name'],
+                options : options,
+                counts : counts
+            });
         }
     }).error(function(data) {
         // TODO : add more complicated error message here.

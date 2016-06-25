@@ -61,9 +61,9 @@ class QuestionSetController extends Controller
 
         $topic = DB::select('SELECT user_id, close_at FROM topics WHERE id = ?', [$id])[0];
 
-        if(Gate::allows('update-topic', $topic)
+        if(Gate::allows('delete-topic', $topic)
            || $question_set->result_visibility === "VISIBLE"
-           || ($question_set->result_visibility === "VISIBLE_AFTER_ENDED") && Carbon::now() < Carbon::parse($topic->close_at)) {
+           || ($question_set->result_visibility === "VISIBLE_AFTER_ENDED") && Carbon::now('Asia/Taipei') > Carbon::parse($topic->close_at, 'Asia/Taipei')) {
 
             $all_ballots = DB::select('SELECT COUNT(*) AS count, option_id
                 FROM ballots WHERE topic_id = ? AND question_set_id = ? GROUP BY option_id', [$id, $qsid]
