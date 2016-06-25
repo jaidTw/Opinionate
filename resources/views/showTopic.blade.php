@@ -564,14 +564,19 @@ $(function()
         var chart_data = ctx.data('chart');
         var options = {}
         if(type == 'bar') {
-            options = {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true,
-                            stepSize: 1,
-                        }
-                    }]
+            options.scales = {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 1,
+                    }
+                }]
+            }
+        }
+        else if(type == 'polarArea') {
+            options.scale = {
+                ticks: {
+                    maxTicksLimit: 5
                 }
             }
         }
@@ -615,6 +620,13 @@ $(function()
                         stepSize: 1,
                     }
                 }]
+            }
+        }
+        else if(type == 'polarArea') {
+            options.scale = {
+                ticks: {
+                    maxTicksLimit: 5
+                }
             }
         }
         chart.destroy();
