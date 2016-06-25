@@ -251,7 +251,7 @@ $(function()
                     'optid' : opt_id
                 }, function(data) {
                     loadQuestionSet(qs_id - 1);
-                }).ballot(function(data) {
+                }).error(function(data) {
                     loadQuestionSet(qs_id - 1);
                     // TODO : add more complicated error message here.
                     $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
@@ -750,6 +750,7 @@ function loadQuestionSet(index) {
                 options : options,
                 counts : counts
             });
+            entry.find("input:checked").click();
         }
     }).error(function(data) {
         // TODO : add more complicated error message here.
