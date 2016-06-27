@@ -13,7 +13,7 @@
     </div>
     <div class="panel-body">
         <div class="row form-group">
-            <div class="col-md-1">
+            <div class="col-md-2">
                 <label class="control-label">{{ trans('views.type') }}</label>
             </div>
             <div class="col-md-3">
@@ -30,10 +30,10 @@
 
         <div class="new-qs-attrs">
             <div class="row form-group">
-                <div class="col-md-1">
+                <div class="col-md-2">
                     <label class="control-label">{{ trans('views.attrs') }}</label>
                 </div>
-                <div class="col-md-11">
+                <div class="col-md-10">
                     <div class="checkbox col-md-12">
                         <label>
                             <input class="new-qs-mult" type="checkbox" value=""/>
@@ -50,7 +50,7 @@
             </div>
 
             <div class="row form-group">
-                <div class="col-md-1">
+                <div class="col-md-2">
                     <label class="control-label">{{ trans('views.result_visibility') }}</label>
                 </div>
                 <div class="col-md-3">
@@ -64,7 +64,7 @@
         </div>
 
         <div class="row form-group">
-            <div class="col-md-1">
+            <div class="col-md-2">
                 <label class="control-label">{{ trans('views.options') }}</label>
             </div>
 

@@ -25,6 +25,7 @@ return [
     'create_new_topic' => '建立新議題',
     'topic_name' => '議題名稱',
     'next' => '下一步',
+    'end_time' => '結束時間',
     'yes' => '是',
     'no' => '否',
 
@@ -39,6 +40,7 @@ return [
     'invisible' => '不可見',
     'visible_after_end' => '結束後可見',
     'unlisted' => '不列出',
+    'ended' => '已結束',
     'same_attr' => '為所有題組使用相同屬性',
     'add_qs' => '新增題組',
     'create' => '建立',

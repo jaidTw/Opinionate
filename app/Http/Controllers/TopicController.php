@@ -22,10 +22,10 @@ class TopicController extends Controller
     public function index(Request $request)
     {
         $topics = DB::select(
-            'SELECT id, user_id, name, username
+            'SELECT id, user_id, name, username, close_at
                 FROM topics NATURAL JOIN
                 (SELECT id AS user_id, name AS username FROM users) AS users_inf WHERE is_unlisted = FALSE ORDER BY id');
-        $per_page = 5;
+        $per_page = 30;
         $pagination = new LengthAwarePaginator($topics, count($topics), $per_page, Paginator::resolveCurrentPage(), ['path' => Paginator::resolveCurrentPath()]);
         $page = $pagination->currentPage();
         $topics = array_slice($topics, ($page - 1) * $per_page, $per_page);
@@ -39,7 +39,7 @@ class TopicController extends Controller
         {
             $term = $request->input('term');
             $topics = DB::select(
-                'SELECT id, user_id, name, username
+                'SELECT id, user_id, name, username, close_at
                     FROM topics NATURAL JOIN
                     (SELECT id AS user_id, name AS username FROM users) AS users_inf
                     WHERE name LIKE ? ORDER BY id', ['%'.$term.'%']);

@@ -28,19 +28,30 @@
                     <th>{{ trans('views.id') }}</th>
                     <th>{{ trans('views.topic_name') }}</th>
                     <th>{{ trans('views.proposer') }}</th>
+                    <th>{{ trans('views.end_time') }}</th>
                 </tr>
                 @foreach($topics as $topic)
-                    <tr class="topic_listing">
-                        <td> {{ $topic->id }} </td>
-                        <td>
+                    <tr class="topic_listing
+                    @if(\Carbon\Carbon::parse($topic->close_at, 'Asia/Taipei') < \Carbon\Carbon::now('Asia/Taipei'))
+                         list-group-item-danger
+                    @endif
+                    ">
+                        <td class="col-md-1"> {{ $topic->id }} </td>
+                        <td class="col-md-6">
                             <a href=' {{ url('topics/' . $topic->id) }}'>
                                 {{ $topic->name }}
                             </a>
                         </td>
-                        <td>
+                        <td class="col-md-2">
                             <a href=' {{ url('home/' . $topic->user_id) }}'>
                                 {{ $topic->username }}
                             </a>
+                        </td>
+                        <td class="col-md-3">
+                            {{ $topic->close_at }}
+                        @if(\Carbon\Carbon::parse($topic->close_at, 'Asia/Taipei') < \Carbon\Carbon::now('Asia/Taipei'))
+                            <span class="label label-danger"> {{trans('views.ended')}} </span> 
+                        @endif
                         </td>
                     </tr>
                 @endforeach
@@ -60,7 +71,6 @@
         {{ $pagination }}
     </div>
 </div>
-@endsection
 
 <!-- Modal -->
 <div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -97,6 +107,7 @@
         </div>
     </div>
 </div>
+@endsection
 
 @section('scripts')
 

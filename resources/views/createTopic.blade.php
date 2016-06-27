@@ -38,7 +38,7 @@
                     <div class="new-qs-attrs hidden">
                         <div class="row form-group">
                             <div class="col-md-1">
-                                <label class="control-label">{{ trans('views.attr') }}</label>
+                                <label class="control-label">{{ trans('views.attrs') }}</label>
                             </div>
                             <div class="col-md-11">
                                 <div class="checkbox col-md-12">
@@ -62,9 +62,9 @@
                             </div>
                             <div class="col-md-3">
                                 <select class="new-qs-vis form-control">
-                                    <option>{{ trans('views.visible') }}</option>
-                                    <option>{{ trans('views.invisible') }}</option>
-                                    <option>{{ trans('views.visible_after_end') }}</option>
+                                    <option value="VISIBLE">{{ trans('views.visible') }}</option>
+                                    <option value="INVISIBLE">{{ trans('views.invisible') }}</option>
+                                    <option value="VISIBLE_AFTER_ENDED">{{ trans('views.visible_after_end') }}</option>
                                 </select>
                             </div>
                         </div>

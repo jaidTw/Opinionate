@@ -122,9 +122,12 @@
                 @endcan
 
                     <h3>{{ trans('views.end_time') }}
-                        @can('update-topic', $topic)
-                        <button id="end_now" class="btn btn-danger btn-sm">{{ trans('views.end_now') }}</button>
-                        @endcan
+                    @if(\Carbon\Carbon::parse($topic->close_at, 'Asia/Taipei') < \Carbon\Carbon::now('Asia/Taipei'))
+                        <span class="label label-danger"> {{trans('views.ended')}} </span> 
+                    @endif
+                    @can('update-topic', $topic)
+                        <button id="end_now" class="btn btn-danger btn-">{{ trans('views.end_now') }}</button>
+                    @endcan
                     </h3>
                     <p class="topic-attr"> {{ $topic->close_at }} </p>
                 @can('update-topic', $topic)
