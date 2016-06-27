@@ -26,6 +26,7 @@ return [
     'topic_name' => 'Topic Name',
     'next' => 'Next',
     'end_time' => 'Close at',
+    'confirm' => 'Confirm',
     'yes' => 'Yes',
     'no' => 'No',
 
@@ -72,7 +73,7 @@ return [
     'last_edit_time' => 'Last Edit Time',
     'oops' => 'Oops!',
     'warning' => 'Warning',
-    'delete_warning_message' => 'You are going to delete the topic.<br/>This will destroy all the things related (question sets, ballots, etc.)',
+    'delete_warning_message' => 'You are going to delete the topic. This will destroy all the things related (question sets, ballots, etc.)',
     'cancel' => 'Cancel',
     'ballot' => 'Ballot',
 
@@ -87,7 +88,7 @@ return [
     'footer_text' => '2016 NTNU Database Course Final Project\n',
 
     'register_time' => 'Registered at: ',
-    'end_now' => 'End Now',
-    'end_now_warning' => 'You\'re about to end this topic. Once it\'s ended you can no longer edit it.'
+    'end-now' => 'End Now',
+    'end-now-warning' => 'You\'re about to end this topic. Once it\'s ended you can no longer edit it.'
 
 ];

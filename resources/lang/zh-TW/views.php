@@ -26,6 +26,7 @@ return [
     'topic_name' => '議題名稱',
     'next' => '下一步',
     'end_time' => '結束時間',
+    'confirm' => '確認',
     'yes' => '是',
     'no' => '否',
 
@@ -72,7 +73,7 @@ return [
     'last_edit_time' => '最後更新時間',
     'oops' => 'Oops!',
     'warning' => '警告',
-    'delete_warning_message' => '您正要刪除此議題，<br/>這將會毀滅所有與此議題相關的資訊（如：題組、選項、投票）。',
+    'delete_warning_message' => '您正要刪除此議題，這將會毀滅所有與此議題相關的資訊（如：題組、選項、投票）。',
     'cancel' => '取消',
     'ballot' => '投票',
 
@@ -87,7 +88,6 @@ return [
     'footer_text' => '2016 年台師大資料庫理論期末專題',
 
     'register_time' => '註冊時間：',
-    'end_now' => '立即關閉',
-    'end_now_warning' => '即將關閉此議題，議題關閉後，您將不再能編輯議題，也不再開放進行投票。'
-
+    'end-now' => '立即關閉',
+    'end-now-warning' => '即將關閉此議題，議題關閉後，您將不再能編輯議題，也不再開放進行投票。'
 ];

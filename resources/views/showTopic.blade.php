@@ -126,7 +126,7 @@
                         <span class="label label-danger"> {{trans('views.ended')}} </span> 
                     @endif
                     @can('update-topic', $topic)
-                        <button id="end_now" class="btn btn-danger btn-">{{ trans('views.end_now') }}</button>
+                        <button id="end-now" class="btn btn-danger btn-">{{ trans('views.end-now') }}</button>
                     @endcan
                     </h3>
                     <p class="topic-attr"> {{ $topic->close_at }} </p>
@@ -176,6 +176,39 @@
         </div>
     </div>
 </div>
+<div id="end-modal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">{{ trans('views.close') }}</span></button>
+                <h4 class="modal-title">{{ trans('views.warning') }}</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>
+                            {{ trans('views.end-now-warning') }}
+                        </p>
+                    </div>
+                </div>
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-4">
+                            <button id="end-confirm" class="btn submit btn-primary">
+                                {{ trans('views.confirm') }}
+                            </button>
+                            <button class="btn btn-default" data-dismiss="modal">
+                                {{ trans('views.cancel') }}
+                            </button>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endcan
+@can('delete-topic', $topic)
 <div id="delete-modal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -433,7 +466,9 @@ $(function()
             $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
             $('#error-modal').modal('show');
         });
-    }).on('click', '#end_now', function(e) {
+    }).on('click', '#end-now', function(e) {
+        $('#end-modal').modal('show');
+    }).on('click', '#end-confirm', function(e) {
         $.post('/topics/' + String({{$topic->id}}) + '/update',
         {
             '_token' : '{{ csrf_token() }}',
@@ -569,6 +604,8 @@ $(function()
     }).on('click', '.opt-remove', function(e) {
         $(this).parents('.opt-entry:first').remove();
     });
+@endcan
+@can('delete-topic', $topic)
     // Handlers for delete topic
     $(document).on('click', '#topic-delete', function(e) {
         $('#delete-modal').modal('show');
@@ -649,7 +686,9 @@ $(function()
                 }
             }
         }
-        chart.destroy();
+        if(typeof chart != "undefined") {
+            chart.destroy();
+        }
         chart = new Chart(ctx, {
             type: type,
             label: '# of votes',

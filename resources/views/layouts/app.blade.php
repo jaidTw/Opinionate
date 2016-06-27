@@ -111,7 +111,7 @@
                 <p class="text-muted text-center">
                     Design by
                     <a href="https://github.com/jaidTw">@jaidTw </a>,
-                    <a href="https://github.com/jaidTw">@RexYuan </a>
+                    <a href="https://github.com/RexYuan">@RexYuan </a>
                     2016, Powered by <a href="https://laravel.com">Laravel</a>
                 </p>
           </div>
