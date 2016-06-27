@@ -85,5 +85,7 @@ return [
     'footer_text' => '2016 年台師大資料庫理論期末專題',
 
     'register_time' => '註冊時間：',
+    'end_now' => '即刻終止',
+    'end_now_warning' => '你即將即刻中止這項議題，在議題終止後，將不再能夠編輯。'
 
 ];

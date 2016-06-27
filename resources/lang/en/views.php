@@ -85,5 +85,7 @@ return [
     'footer_text' => '2016 NTNU Database Course Final Project\n',
 
     'register_time' => 'Registered at: ',
+    'end_now' => 'End Now',
+    'end_now_warning' => 'You\'re about to end this topic. Once it\'s ended you can no longer edit it.'
 
 ];

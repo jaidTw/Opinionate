@@ -121,7 +121,11 @@
                     </select>
                 @endcan
 
-                    <h3>{{ trans('views.end_time') }}</h3>
+                    <h3>{{ trans('views.end_time') }}
+                        @can('update-topic', $topic)
+                        <button id="end_now" class="btn btn-danger btn-sm">{{ trans('views.end_now') }}</button>
+                        @endcan
+                    </h3>
                     <p class="topic-attr"> {{ $topic->close_at }} </p>
                 @can('update-topic', $topic)
                     <div class='input-group date hidden' id='topic-end-time-input'>
@@ -241,7 +245,7 @@ $(function()
         var qs_id = $(this).parents('.qs-entry').index() + 1;
         var opt_id = $('.qs-entry:nth(' + String(qs_id - 1) + ') .option').index($(this)) + 1;
 
-        if($(this).hasClass('multi')) { 
+        if($(this).hasClass('multi')) {
             if($(this).hasClass('list-group-item-info')) {
                 //destroy
                 $.post('/topics/' + String({{$topic->id}}) + '/ballot/destroy',
@@ -419,6 +423,19 @@ $(function()
             'type' : 'attr',
             'close_at' : $('#topic-end-time-input').data('DateTimePicker').date().format('YYYY-MM-DD HH:mm:ss'),
             'is_unlisted' : $('#topic-unlist-input').val()
+        }, function(data) {
+            window.location = "/topics/{{$topic->id}}";
+        }).error(function(data) {
+            // TODO : add more complicated error message here.
+            $('#error-modal .modal-body p').html("Some error occured! Please try again later.");
+            $('#error-modal').modal('show');
+        });
+    }).on('click', '#end_now', function(e) {
+        $.post('/topics/' + String({{$topic->id}}) + '/update',
+        {
+            '_token' : '{{ csrf_token() }}',
+            'type' : 'attr',
+            'close_at' : moment().format("YYYY-MM-DD HH:mm:ss")
         }, function(data) {
             window.location = "/topics/{{$topic->id}}";
         }).error(function(data) {
