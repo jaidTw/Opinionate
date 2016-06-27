@@ -81,11 +81,11 @@ return [
     'feature1_description' => '題組有一般、地點、時間、圖片、音訊、視訊種類可以選擇',
     'feature2_description' => '議題可以設定時限，讓有時效性的投票在議題結束後就停止',
     'feature3_description' => '議題本身可以不在瀏覽議題的總頁中列出，題組可以設定匿名性或是投票結果能見度',
-    'main_description' => 'Opinionate 是我們有鑒於目前市面上可以輕鬆使用的投票系統，例如 Google 表單或是 Facebook 的投票，都不足以達成我們所期望的需求，因此我們決定自己做一個！',
+    'main_description' => '有鑒於目前多數人使用的投票系統，例如 Google 表單、 Facebook 的投票，都不足以達成我們所期望的需求，因此我們開發了Opinionate！',
     'footer_text' => '2016 年台師大資料庫理論期末專題',
 
     'register_time' => '註冊時間：',
-    'end_now' => '即刻終止',
-    'end_now_warning' => '你即將即刻中止這項議題，在議題終止後，將不再能夠編輯。'
+    'end_now' => '立即關閉',
+    'end_now_warning' => '即將關閉此議題，議題關閉後，您將不再能編輯議題，也不再開放進行投票。'
 
 ];

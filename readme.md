@@ -26,8 +26,6 @@ php artisan migrate
 ```
 
 # Todo
-* `showTopic.blade.php`
-    * add `Chart.js`
 * `createTopic.blade.php`
     * question sets and options number constraint.
         * trigger error by the number of DOM elements.
@@ -41,7 +39,6 @@ php artisan migrate
     * may perform question set number checking
 * Improve Landing Page
 * User dashboard
-* User page
 * More friendly validation error message.
 * Replace pure sql statements with Eloquent ORM after demo
 * Improve i18n + zh-tw l10n
